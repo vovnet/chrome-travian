@@ -1,0 +1,14 @@
+{
+  "name": "Travian Bot",
+  "description": "Farmer",
+  "version": "1.0.0",
+  "manifest_version": 3,
+  "permissions": ["activeTab", "storage"],
+  "host_permissions": ["https://*.travian.com/*"],
+  "content_scripts": [
+    {
+      "matches": ["https://*.travian.com/*"],
+      "js": ["dist/main.js"]
+    }
+  ]
+}

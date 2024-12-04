@@ -1,0 +1,19 @@
+.botContainer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 100;
+}
+
+.root {
+  background-color: white;
+  overflow: auto;
+}
+
+.village-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  max-height: 800px;
+  overflow: auto;
+}

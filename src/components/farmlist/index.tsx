@@ -101,10 +101,16 @@ export const Farmlist: FC = () => {
           } catch (e) {
             console.log("send farm error!");
             localStorage.setItem(LAST_POSITION, i.toString());
+            setLastPosition(i);
             setIsLoading(false);
             break;
           }
         }
+      }
+
+      if (i === farmsArray.length - 1) {
+        localStorage.setItem(LAST_POSITION, "0");
+        setLastPosition(0);
       }
     }
 
@@ -138,7 +144,7 @@ export const Farmlist: FC = () => {
           <Flex flexDirection="column" gap={8}>
             <Flex gap={24} alignItems="center">
               <div>{`В списке: ${farms.size}`}</div>
-              <div>{`Текущая: ${lastPosition}`}</div>
+              <div>{`Текущая: ${lastPosition + 1}`}</div>
               <button
                 className="textButtonV1 green"
                 disabled={isLoading}

@@ -175,8 +175,8 @@ export const Farmlist: FC = () => {
               const [x, y] = v.split("|");
               return { id: v, x, y };
             })
-            .map(({ id, x, y }) => (
-              <ListItem key={id} alignItems="center" gap={8}>
+            .map(({ id, x, y }, index) => (
+              <ListItem key={id} alignItems="center" gap={8} isCurrent={index === lastPosition}>
                 <FarmLink href={`/karte.php?x=${x}&y=${y}`}>{`(${x}|${y})`}</FarmLink>
                 <button type="button" className="icon" onClick={() => remove(id)}>
                   <img src="/img/x.gif" className="del" />

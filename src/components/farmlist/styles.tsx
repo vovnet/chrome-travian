@@ -25,8 +25,9 @@ export const List = styled(Flex)`
   overflow: auto;
 `;
 
-export const ListItem = styled(Flex)`
-  background-color: #f5efe0;
+export const ListItem = styled(Flex)<{ isCurrent?: boolean }>`
+  background-color: ${(props) => (props.isCurrent ? "#ffec3f" : "#f5efe0")};
+  transition: 1s;
 `;
 
 export const FarmLink = styled.a`

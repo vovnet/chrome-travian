@@ -6,9 +6,9 @@ export const Container = styled.div`
 
 export const Item = styled.div<{ isSelected?: boolean; background?: `#${string}` }>`
   padding: 8px 14px;
-  border-bottom: ${(props) => (props.isSelected ? "4px solid #7cb029" : "4px solid transparent")};
+  border-bottom: ${(props) => (props.isSelected ? "none" : "4px solid #7cb029")};
   transition: 0.3s;
-  background-color: ${(props) => props.background || "#fff"};
+  background-color: ${(props) => (props.isSelected ? "#fffff" : "#f7ffed")};
   user-select: none;
 
   &:hover {

@@ -10,7 +10,7 @@ export const Settings: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={8}>
-        <Typography size="large">Settings</Typography>
+        <Typography size="large">Настройки</Typography>
         <select value={nation} onChange={(e) => changeNation(Number(e.target.value) as Nations)}>
           <option value="">Выберите народ</option>
           <option value={0}>Римляне</option>

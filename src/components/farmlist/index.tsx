@@ -4,6 +4,7 @@ import { Flex } from "../../ui/flex";
 import { TroopForm } from "../troop-form";
 import { sleep } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
+import { Typography } from "../../ui/text";
 
 type Farm = { x: string; y: string };
 
@@ -120,6 +121,7 @@ export const Farmlist: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={12}>
+        <Typography size="large">Список фарма</Typography>
         <InputContainer>
           <label>x|y:</label>
           <TextInput ref={inputRef} type="text" className="text" />

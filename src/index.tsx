@@ -27,9 +27,9 @@ const App: FC = () => {
     <AppContainer>
       <Tabs
         items={[
-          { id: "oasis", title: "Оазисы", styles: { background: "#71ff39" } },
-          { id: "farm", title: "Фармлист", styles: { background: "#ff39f5" } },
-          { id: "searchFarm", title: "Поиск", styles: { background: "#395dff" } },
+          { id: "oasis", title: "Оазисы" },
+          { id: "farm", title: "Фармлист" },
+          { id: "searchFarm", title: "Поиск" },
           { id: "settings", title: "Настр." },
         ]}
         selected={page}

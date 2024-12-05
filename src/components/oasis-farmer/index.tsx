@@ -4,6 +4,7 @@ import { Container, SearchForm, VillageContainer } from "./styles";
 import { TroopForm } from "../troop-form";
 import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
+import { Typography } from "../../ui/text";
 
 export const OasisFarmer: FC = () => {
   const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
@@ -115,6 +116,7 @@ export const OasisFarmer: FC = () => {
   console.log({ checkedFarm });
   return (
     <Container>
+      <Typography size="large">Поиск оазисов</Typography>
       <SearchForm>
         <div>
           <label>x:</label>

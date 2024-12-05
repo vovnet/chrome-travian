@@ -13,12 +13,12 @@ export const Typography = styled.div<TextProps>`
 const getSize = (s?: TextSize) => {
   switch (s) {
     case "small":
-      return "0.6rem";
+      return "0.8em";
     case "medium":
-      return "1rem";
+      return "1em";
     case "large":
-      return "1.6rem";
+      return "1.4em";
     default:
-      return "1rem";
+      return "1em";
   }
 };

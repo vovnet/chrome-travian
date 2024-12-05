@@ -4,6 +4,7 @@ import { Flex } from "../../ui/flex";
 import { Tile, TilePosition } from "../../types";
 import { getDistance } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
+import { Typography } from "../../ui/text";
 
 const getPosition = (pos: string): TilePosition => {
   const splitted = pos.trim().split("|");
@@ -57,6 +58,7 @@ export const FarmSearch: FC = () => {
 
   return (
     <Container>
+      <Typography size="large">Поиск деревень</Typography>
       <Flex gap={8} alignItems="center">
         <label>x|y:</label>
         <TextInput

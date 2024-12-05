@@ -3,7 +3,7 @@ import styled from "styled-components";
 export const Container = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 8px;
   background-color: white;
   overflow: auto;
   padding: 24px 16px;
@@ -20,6 +20,6 @@ export const VillageContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  max-height: 600px;
+  max-height: 540px;
   overflow: auto;
 `;

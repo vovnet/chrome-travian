@@ -1,11 +1,14 @@
 import React, { FC, forwardRef, useRef } from "react";
 import { UNITS } from "../../utils/unit";
-import { CURRENT_NATION } from "../..";
 import { TroopInput, TroopItem, TroopsContainer } from "./styles";
+import { useNation } from "../../hooks/use-nation";
 
 type TroopFormProps = {};
 
 export const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
+  const { nation } = useNation();
+  const CURRENT_NATION = nation !== undefined ? nation : 0;
+
   return (
     <form ref={ref} method="post">
       <TroopsContainer>

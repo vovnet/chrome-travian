@@ -1,5 +1,7 @@
 export type Unit = { name: string; type: string };
 
+export type Nations = 0 | 1 | 2;
+
 export type UnitDictionary = {
   "1": Unit;
   "2": Unit;

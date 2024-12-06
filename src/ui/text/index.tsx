@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled from "@emotion/styled";
 
 type TextSize = "small" | "medium" | "large";
 

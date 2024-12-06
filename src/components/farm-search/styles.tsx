@@ -1,5 +1,4 @@
-import styled from "styled-components";
-import { Flex } from "../../ui/flex";
+import styled from "@emotion/styled";
 
 export const Container = styled.div`
   display: flex;

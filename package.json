@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@emotion/babel-preset-css-prop": "^11.12.0",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@types/chrome": "^0.0.287",

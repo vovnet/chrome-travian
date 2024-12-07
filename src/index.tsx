@@ -1,5 +1,4 @@
 import { createPortal } from "./tools";
-import "./style.css";
 import { FC, useState } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
@@ -9,6 +8,7 @@ import { AppContainer } from "./styles";
 import { Farmlist } from "./components/farmlist";
 import { FarmSearch } from "./components/farm-search";
 import { Settings } from "./components/settings";
+import "./style.css";
 
 console.log("Travian bot started!");
 

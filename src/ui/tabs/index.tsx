@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { FC, useState } from "react";
-import { Colors } from "../../variables/colors";
+import { tokens } from "../../variables/tokens";
 
 export const Container = styled.div`
   display: flex;
@@ -13,14 +13,14 @@ export const Item = styled.div<{ isSelected?: boolean; background?: `#${string}`
   flex: 1;
   text-align: center;
   padding: 8px 14px;
-  border-bottom: ${(props) => (props.isSelected ? `2px solid ${Colors.accent}` : "none")};
+  border-bottom: ${(props) => (props.isSelected ? `2px solid ${tokens.colors.accent}` : "none")};
   transition: color 0.3s;
-  color: ${(props) => (props.isSelected ? Colors.accent : Colors.primary)};
+  color: ${(props) => (props.isSelected ? tokens.colors.accent : tokens.colors.primary)};
   user-select: none;
 
   &:hover {
     cursor: pointer;
-    border-bottom: 2px solid ${Colors.accent};
+    border-bottom: 2px solid ${tokens.colors.accent};
   }
 `;
 

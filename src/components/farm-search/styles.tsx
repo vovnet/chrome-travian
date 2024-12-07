@@ -15,7 +15,6 @@ export const TextInput = styled.input`
 export const Table = styled.div`
   display: grid;
   grid-template-columns: auto auto auto auto auto;
-  background-color: #faf8e8;
   padding: 4px;
   max-height: 600px;
   overflow: auto;

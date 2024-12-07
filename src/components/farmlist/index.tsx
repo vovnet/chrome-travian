@@ -138,7 +138,7 @@ export const Farmlist: FC = () => {
               }
             }}
           >
-            +
+            Добавить
           </button>
         </InputContainer>
 

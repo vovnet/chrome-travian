@@ -20,11 +20,19 @@ const Table = styled.div`
   gap: 8px;
 `;
 
-export const TextInput = styled.input`
+const TextInput = styled.input`
   width: 60px;
 `;
 
+const Crop = styled.div<{ isNine?: boolean }>`
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  background-color: ${(props) => (props.isNine ? "#cec47b" : "#DAC734")};
+`;
+
 const FARM_15 = "{k.vt} {k.f6}";
+const FARM_9 = "{k.vt} {k.f1}";
 
 type TileWithDist = Tile & { distance?: number };
 
@@ -33,13 +41,18 @@ export const Find15: FC = () => {
   const [progress, setProgress] = useState("");
   const [allTiles, setAllTiles] = useState<TileWithDist[]>();
   const [start, setStart] = useState("");
+  const [isNine, setIsNine] = useState(false);
 
   useEffect(() => {
     console.log({ allTiles });
   }, [allTiles]);
 
   const filtered = useMemo(() => {
-    const filtered = allTiles?.filter(({ title }) => title === FARM_15);
+    const filterFn: (value: TileWithDist) => boolean = isNine
+      ? ({ title }) => title === FARM_15 || title === FARM_9
+      : ({ title }) => title === FARM_15;
+
+    const filtered = allTiles?.filter(filterFn);
 
     const spl = start.split("|");
     if (spl.length !== 2) {
@@ -55,19 +68,28 @@ export const Find15: FC = () => {
         };
       })
       .sort((a, b) => a.distance - b.distance);
-  }, [allTiles, start]);
+  }, [allTiles, start, isNine]);
 
   return (
     <Container>
       <Flex flexDirection="column" gap={12}>
         <Typography size="large">find 15</Typography>
-        <label>x|y:</label>
-        <TextInput
-          type="text"
-          className="text"
-          value={start}
-          onChange={(e) => setStart(e.target.value)}
-        />
+        <Flex gap={12} alignItems="center">
+          <div>
+            <label>x|y:</label>
+            <TextInput
+              type="text"
+              className="text"
+              value={start}
+              onChange={(e) => setStart(e.target.value)}
+            />
+          </div>
+          <div>
+            <label>9:</label>
+            <input type="checkbox" checked={isNine} onChange={(e) => setIsNine(e.target.checked)} />
+          </div>
+        </Flex>
+
         <button
           className="textButtonV1 green"
           disabled={isLoading}
@@ -98,10 +120,10 @@ export const Find15: FC = () => {
           {filtered?.map((tile) => {
             const { x, y } = tile.position;
             return (
-              <Flex alignItems="center" gap={4}>
+              <Crop isNine={tile.title === FARM_9}>
                 <Typography>{tile.distance}</Typography>
                 <a href={`/karte.php?x=${x}&y=${y}`}>{`(${x}|${y})`}</a>
-              </Flex>
+              </Crop>
             );
           })}
         </Table>

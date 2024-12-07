@@ -5,6 +5,7 @@ import { TroopForm } from "../troop-form";
 import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
 import { Typography } from "../../ui/text";
+import { apiMapPosition } from "../../client";
 
 export const OasisFarmer: FC = () => {
   const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
@@ -86,16 +87,9 @@ export const OasisFarmer: FC = () => {
   const searchHandler = async () => {
     setIsLoading(true);
     setCheckedFarm([]);
-    const data = await fetch("/api/v1/map/position", {
-      method: "POST",
-      body: JSON.stringify({ data: { ...position, zoomLevel: 3, ignorePositions: [] } }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
 
-    const { tiles } = (await data.json()) as { tiles: Tile[] };
+    const tiles = await apiMapPosition(position);
+
     const oaz = tiles
       .filter((t) => t.title === "{k.fo}")
       .map((t) => {

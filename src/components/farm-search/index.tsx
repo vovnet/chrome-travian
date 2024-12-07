@@ -5,6 +5,7 @@ import { Tile, TilePosition } from "../../types";
 import { getDistance } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
+import { apiMapPosition } from "../../client";
 
 const getPosition = (pos: string): TilePosition => {
   const splitted = pos.trim().split("|");
@@ -28,16 +29,7 @@ export const FarmSearch: FC = () => {
     const { x, y } = getPosition(position);
     console.log("serach: ", { x, y });
 
-    const data = await fetch("/api/v1/map/position", {
-      method: "POST",
-      body: JSON.stringify({ data: { x, y, zoomLevel: 3, ignorePositions: [] } }),
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-    });
-
-    const { tiles } = (await data.json()) as { tiles: Tile[] };
+    const tiles = await apiMapPosition({ x, y });
 
     const villiages = tiles
       .filter((t) => t.title?.includes("{k.dt}"))

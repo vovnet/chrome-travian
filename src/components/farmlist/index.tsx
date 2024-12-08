@@ -122,7 +122,7 @@ export const Farmlist: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={12}>
-        <Typography size="large">Список фарма</Typography>
+        <Typography size="large">{chrome.i18n.getMessage("listOfFarmsTitle")}</Typography>
         <InputContainer>
           <label>x|y:</label>
           <TextInput ref={inputRef} type="text" className="text" />
@@ -138,15 +138,15 @@ export const Farmlist: FC = () => {
               }
             }}
           >
-            Добавить
+            {chrome.i18n.getMessage("add")}
           </Button>
         </InputContainer>
 
         {!!farms.size && (
           <Flex flexDirection="column" gap={8}>
             <Flex gap={24} alignItems="center">
-              <div>{`В списке: ${farms.size}`}</div>
-              <div>{`Текущая: ${lastPosition + 1}`}</div>
+              <div>{`${chrome.i18n.getMessage("inList")}: ${farms.size}`}</div>
+              <div>{`${chrome.i18n.getMessage("current")}: ${lastPosition + 1}`}</div>
               <Button
                 disabled={isLoading}
                 onClick={() => {
@@ -154,12 +154,12 @@ export const Farmlist: FC = () => {
                   localStorage.setItem(LAST_POSITION, "0");
                 }}
               >
-                Сброс
+                {chrome.i18n.getMessage("reset")}
               </Button>
             </Flex>
             <TroopForm ref={troopFormRef} />
             <Button disabled={!farms.size || isLoading} onClick={sendFarmHandler}>
-              Отправить фармить
+              {chrome.i18n.getMessage("sendToFarm")}
             </Button>
           </Flex>
         )}

@@ -51,7 +51,7 @@ export const FarmSearch: FC = () => {
 
   return (
     <Container>
-      <Typography size="large">Поиск деревень</Typography>
+      <Typography size="large">{chrome.i18n.getMessage("searchOfOasisVilliages")}</Typography>
       <Flex gap={8} alignItems="center">
         <label>x|y:</label>
         <TextInput
@@ -67,10 +67,10 @@ export const FarmSearch: FC = () => {
       </Flex>
 
       <Table>
-        <Cell>Дист.</Cell>
-        <Cell>Поз.</Cell>
-        <Cell>Альянс</Cell>
-        <Cell>Нас.</Cell>
+        <Cell>{chrome.i18n.getMessage("tableDist")}</Cell>
+        <Cell>{chrome.i18n.getMessage("tablePos")}</Cell>
+        <Cell>{chrome.i18n.getMessage("tableAlly")}</Cell>
+        <Cell>{chrome.i18n.getMessage("tablePop")}</Cell>
         <Cell>✅</Cell>
         {villiages?.map((v) => {
           const vPos = `${v.position.x}|${v.position.y}`;

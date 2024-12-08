@@ -112,7 +112,7 @@ export const OasisFarmer: FC = () => {
   console.log({ checkedFarm });
   return (
     <Container>
-      <Typography size="large">Поиск оазисов</Typography>
+      <Typography size="large">{chrome.i18n.getMessage("searchOfOasisTitle")}</Typography>
       <SearchForm>
         <div>
           <label>x:</label>
@@ -172,7 +172,7 @@ export const OasisFarmer: FC = () => {
 
       {!!tiles.length && (
         <Button disabled={isLoading || !checkedFarm.length || isSending} onClick={sendFarmHandler}>
-          Отправить фармить
+          {chrome.i18n.getMessage("sendToFarm")}
         </Button>
       )}
     </Container>

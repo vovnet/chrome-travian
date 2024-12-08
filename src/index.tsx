@@ -31,11 +31,11 @@ const App: FC = () => {
       <AppContainer>
         <Tabs
           items={[
-            { id: "oasis", title: "Оазисы" },
-            { id: "farm", title: "Фармлист" },
-            { id: "searchFarm", title: "Поиск" },
-            { id: "15", title: "15" },
-            { id: "settings", title: "Настр." },
+            { id: "oasis", title: chrome.i18n.getMessage("oases") },
+            { id: "farm", title: chrome.i18n.getMessage("farmlist") },
+            { id: "searchFarm", title: chrome.i18n.getMessage("farmSearch") },
+            { id: "15", title: chrome.i18n.getMessage("crop") },
+            { id: "settings", title: chrome.i18n.getMessage("settings") },
           ]}
           selected={page}
           onChange={setPage}

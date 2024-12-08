@@ -10,12 +10,12 @@ export const Settings: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={8}>
-        <Typography size="large">Настройки</Typography>
+        <Typography size="large">{chrome.i18n.getMessage("settingsTitle")}</Typography>
         <select value={nation} onChange={(e) => changeNation(Number(e.target.value) as Nations)}>
-          <option value="">Выберите народ</option>
-          <option value={0}>Римляне</option>
-          <option value={1}>Германцы</option>
-          <option value={2}>Галы</option>
+          <option value="">{chrome.i18n.getMessage("selectNation")}</option>
+          <option value={0}>{chrome.i18n.getMessage("romans")}</option>
+          <option value={1}>{chrome.i18n.getMessage("germans")}</option>
+          <option value={2}>{chrome.i18n.getMessage("gauls")}</option>
         </select>
       </Flex>
     </Container>

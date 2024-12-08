@@ -1,0 +1,83 @@
+{
+  "search": {
+    "message": "Поиск"
+  },
+  "add": {
+    "message": "Добавить"
+  },
+  "reset": {
+    "message": "Сброс"
+  },
+  "sendToFarm": {
+    "message": "Отправить фармить"
+  },
+  "inList": {
+    "message": "В списке"
+  },
+  "current": {
+    "message": "Текущая"
+  },
+  "listOfFarmsTitle": {
+    "message": "Список фарма"
+  },
+  "searchOfOasisTitle": {
+    "message": "Поиск оазисов"
+  },
+  "searchOfOasisVilliages": {
+    "message": "Поиск деревень"
+  },
+  "oases": {
+    "message": "Оазисы"
+  },
+  "farmlist": {
+    "message": "Фармлист"
+  },
+  "farmSearch": {
+    "message": "Поиск"
+  },
+  "crop": {
+    "message": "15"
+  },
+  "settings": {
+    "message": "Настр."
+  },
+  "searchOfCropTitle": {
+    "message": "Поиск кроповых клеток"
+  },
+  "closer": {
+    "message": "Ближе"
+  },
+  "nineCrop": {
+    "message": "9"
+  },
+  "progress": {
+    "message": "Прогресс"
+  },
+  "settingsTitle": {
+    "message": "Настройки"
+  },
+  "selectNation": {
+    "message": "Выберите народ"
+  },
+  "romans": {
+    "message": "Римляне"
+  },
+  "gauls": {
+    "message": "Галлы"
+  },
+  "germans": {
+    "message": "Германцы"
+  },
+  "tableDist": {
+    "message": "Дист"
+  },
+  "tablePos": {
+    "message": "Поз"
+  },
+  "tableAlly": {
+    "message": "Альянс"
+  },
+  "tablePop": {
+    "message": "Нас"
+  }
+}

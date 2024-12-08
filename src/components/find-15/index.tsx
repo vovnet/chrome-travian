@@ -74,10 +74,10 @@ export const Find15: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={12}>
-        <Typography size="large">Поиск кроповых клеток</Typography>
+        <Typography size="large">{chrome.i18n.getMessage("searchOfCropTitle")}</Typography>
         <Flex gap={12} alignItems="center">
           <div>
-            <label>Ближе:</label>
+            <label>{chrome.i18n.getMessage("closer")}:</label>
             <TextInput
               type="text"
               className="text"
@@ -87,7 +87,7 @@ export const Find15: FC = () => {
             />
           </div>
           <div>
-            <label>9:</label>
+            <label>{chrome.i18n.getMessage("nineCrop")}:</label>
             <input type="checkbox" checked={isNine} onChange={(e) => setIsNine(e.target.checked)} />
           </div>
         </Flex>
@@ -112,10 +112,12 @@ export const Find15: FC = () => {
             setIsLoading(false);
           }}
         >
-          Поиск
+          {chrome.i18n.getMessage("search")}
         </Button>
 
-        <Typography>Прогресс: {progress}</Typography>
+        <Typography>
+          {chrome.i18n.getMessage("progress")}: {progress}
+        </Typography>
 
         <Table>
           {filtered?.map((tile) => {

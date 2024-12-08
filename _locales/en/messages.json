@@ -1,0 +1,83 @@
+{
+  "search": {
+    "message": "Search"
+  },
+  "add": {
+    "message": "Add"
+  },
+  "reset": {
+    "message": "Reset"
+  },
+  "sendToFarm": {
+    "message": "Attack"
+  },
+  "inList": {
+    "message": "On the list"
+  },
+  "current": {
+    "message": "Current"
+  },
+  "listOfFarmsTitle": {
+    "message": "Farms List"
+  },
+  "searchOfOasisTitle": {
+    "message": "Oases For Search"
+  },
+  "searchOfOasisVilliages": {
+    "message": "Search For Villages"
+  },
+  "oases": {
+    "message": "Oases"
+  },
+  "farmlist": {
+    "message": "Farmlist"
+  },
+  "farmSearch": {
+    "message": "Farmsearch"
+  },
+  "crop": {
+    "message": "15"
+  },
+  "settings": {
+    "message": "Sett."
+  },
+  "searchOfCropTitle": {
+    "message": "Search For Crop Cells"
+  },
+  "closer": {
+    "message": "Closer"
+  },
+  "nineCrop": {
+    "message": "9"
+  },
+  "progress": {
+    "message": "Progress"
+  },
+  "settingsTitle": {
+    "message": "Settings"
+  },
+  "selectNation": {
+    "message": "Choose nation"
+  },
+  "romans": {
+    "message": "Romans"
+  },
+  "gauls": {
+    "message": "Gauls"
+  },
+  "germans": {
+    "message": "Germans"
+  },
+  "tableDist": {
+    "message": "Dist"
+  },
+  "tablePos": {
+    "message": "Pos"
+  },
+  "tableAlly": {
+    "message": "Ally"
+  },
+  "tablePop": {
+    "message": "Pop"
+  }
+}

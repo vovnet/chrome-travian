@@ -7,6 +7,7 @@ import { TilePosition, Tile } from "../../types";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
+import { TextField } from "../../ui/text-field";
 
 export const OasisFarmer: FC = () => {
   const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
@@ -115,9 +116,7 @@ export const OasisFarmer: FC = () => {
       <SearchForm>
         <div>
           <label>x:</label>
-          <input
-            type="text"
-            className="text"
+          <TextField
             value={position.x}
             disabled={isLoading}
             onChange={(e) => {
@@ -127,10 +126,8 @@ export const OasisFarmer: FC = () => {
         </div>
         <div>
           <label>y: </label>
-          <input
+          <TextField
             value={position.y}
-            type="text"
-            className="text"
             disabled={isLoading}
             onChange={(e) => {
               setPosition((prev) => ({ ...prev, y: Number(e.target.value) }));

@@ -79,5 +79,8 @@
   },
   "tablePop": {
     "message": "Pop"
+  },
+  "errors": {
+    "message": "Errors"
   }
 }

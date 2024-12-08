@@ -79,5 +79,8 @@
   },
   "tablePop": {
     "message": "Нас"
+  },
+  "errors": {
+    "message": "Ошибок"
   }
 }

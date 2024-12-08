@@ -27,9 +27,10 @@ export const List = styled(Flex)`
 
 export const ListItem = styled(Flex)<{ isCurrent?: boolean }>`
   background-color: ${(props) => (props.isCurrent ? "#ffec3f" : "#f5efe0")};
-  transition: 1s;
+  transition: 0.4s;
 `;
 
-export const FarmLink = styled.a`
+export const FarmLink = styled.a<{ isDanger?: boolean }>`
   min-width: 60px;
+  background-color: ${(props) => (props.isDanger ? "#290201" : "inherit")};
 `;

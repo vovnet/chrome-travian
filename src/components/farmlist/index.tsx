@@ -6,6 +6,8 @@ import { sleep } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { Button } from "../../ui/button";
+import { apiTileDetails } from "../../client";
+import { isFailedLastAttack, lastLootedResources } from "../../client/parser";
 
 type Farm = { x: string; y: string };
 
@@ -18,6 +20,7 @@ export const Farmlist: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [sendingCount, setSendingCount] = useState(0);
   const [lastPosition, setLastPosition] = useState(0);
+  const [stopList, setStopList] = useState(new Set());
 
   useEffect(() => {
     const pos = Number(localStorage.getItem(LAST_POSITION));
@@ -29,6 +32,7 @@ export const Farmlist: FC = () => {
     let count = 0;
     setSendingCount(count);
     const farmsArray = Array.from(farms);
+    const missedAttacks = new Set<string>();
 
     const index = lastPosition < farmsArray.length ? lastPosition : 0;
     for (let i = index; i < farmsArray.length; i++) {
@@ -36,19 +40,22 @@ export const Farmlist: FC = () => {
       count++;
       console.log("send troop to: ", v);
       const [x, y] = v.split("|");
-      const data = await fetch("/api/v1/map/tile-details", {
-        method: "POST",
-        body: JSON.stringify({ x: parseFloat(x), y: parseFloat(y) }),
-        headers: {
-          Accept: "application/json, text/javascript, */*",
-          "Content-Type": "application/json; charset=UTF-8",
-        },
-      });
-      const { html } = (await data.json()) as { html: string };
+
+      const html = await apiTileDetails({ x: parseFloat(x), y: parseFloat(y) });
       const find = html.match(/targetMapId=\d*/);
       if (find) {
-        const [, mapId] = find[0].split("=");
-        // console.log("loaded map: ", { mapId });
+        // const [, mapId] = find[0].split("=");
+        if (isFailedLastAttack(html)) {
+          console.log("Last attack was failed! ", v);
+          missedAttacks.add(v);
+          setStopList(missedAttacks);
+          continue;
+        }
+        const lastLoot = lastLootedResources(html);
+        if (lastLoot) {
+          console.log({ v, lastLoot });
+        }
+
         if (troopFormRef.current) {
           try {
             const formData = new FormData(troopFormRef.current);
@@ -108,6 +115,10 @@ export const Farmlist: FC = () => {
             break;
           }
         }
+      } else {
+        console.log("Wrong villiage position: ", v);
+        missedAttacks.add(v);
+        setStopList(missedAttacks);
       }
 
       if (i === farmsArray.length - 1) {
@@ -140,6 +151,16 @@ export const Farmlist: FC = () => {
           >
             {chrome.i18n.getMessage("add")}
           </Button>
+
+          <Button
+            disabled={isLoading}
+            onClick={() => {
+              setLastPosition(0);
+              localStorage.setItem(LAST_POSITION, "0");
+            }}
+          >
+            {chrome.i18n.getMessage("reset")}
+          </Button>
         </InputContainer>
 
         {!!farms.size && (
@@ -147,15 +168,7 @@ export const Farmlist: FC = () => {
             <Flex gap={24} alignItems="center">
               <div>{`${chrome.i18n.getMessage("inList")}: ${farms.size}`}</div>
               <div>{`${chrome.i18n.getMessage("current")}: ${lastPosition + 1}`}</div>
-              <Button
-                disabled={isLoading}
-                onClick={() => {
-                  setLastPosition(0);
-                  localStorage.setItem(LAST_POSITION, "0");
-                }}
-              >
-                {chrome.i18n.getMessage("reset")}
-              </Button>
+              <div>{`${chrome.i18n.getMessage("errors")}: ${stopList.size}`}</div>
             </Flex>
             <TroopForm ref={troopFormRef} />
             <Button disabled={!farms.size || isLoading} onClick={sendFarmHandler}>
@@ -172,8 +185,22 @@ export const Farmlist: FC = () => {
             })
             .map(({ id, x, y }, index) => (
               <ListItem key={id} alignItems="center" gap={8} isCurrent={index === lastPosition}>
-                <FarmLink href={`/karte.php?x=${x}&y=${y}`}>{`(${x}|${y})`}</FarmLink>
-                <button type="button" className="icon" onClick={() => remove(id)}>
+                <FarmLink
+                  href={`/karte.php?x=${x}&y=${y}`}
+                  isDanger={stopList.has(id)}
+                >{`(${x}|${y})`}</FarmLink>
+                <button
+                  type="button"
+                  className="icon"
+                  onClick={() => {
+                    const removedIndex = Array.from(farms).findIndex((i) => i === id);
+                    const isRemoved = remove(id);
+                    if (isRemoved && lastPosition > removedIndex) {
+                      setLastPosition(lastPosition - 1);
+                      localStorage.setItem(LAST_POSITION, (lastPosition - 1).toString());
+                    }
+                  }}
+                >
                   <img src="/img/x.gif" className="del" />
                 </button>
               </ListItem>

@@ -5,7 +5,7 @@ import { TroopForm } from "../troop-form";
 import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
 import { Typography } from "../../ui/text";
-import { apiMapPosition } from "../../client";
+import { apiMapPosition, apiTileDetails } from "../../client";
 import { Button } from "../../ui/button";
 import { TextField } from "../../ui/text-field";
 
@@ -21,19 +21,11 @@ export const OasisFarmer: FC = () => {
     checkedFarm.map(async (v) => {
       console.log("send troop to: ", v);
       const [x, y] = v.split("|");
-      const data = await fetch("/api/v1/map/tile-details", {
-        method: "POST",
-        body: JSON.stringify({ x, y }),
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-        },
-      });
-      const { html } = (await data.json()) as { html: string };
+
+      const html = await apiTileDetails({ x: parseFloat(x), y: parseFloat(y) });
       const find = html.match(/targetMapId=\d*/);
       if (find) {
         const [, mapId] = find[0].split("=");
-        // console.log("loaded map: ", { mapId });
         if (troopFormRef.current) {
           const formData = new FormData(troopFormRef.current);
           formData.append("eventType", "4");

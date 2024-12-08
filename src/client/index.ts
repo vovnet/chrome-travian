@@ -14,3 +14,16 @@ export const apiMapPosition = async ({ x, y }: TilePosition) => {
 
   return tiles;
 };
+
+export const apiTileDetails = async ({ x, y }: TilePosition) => {
+  const data = await fetch("/api/v1/map/tile-details", {
+    method: "POST",
+    body: JSON.stringify({ x: x, y: y }),
+    headers: {
+      Accept: "application/json, text/javascript, */*",
+      "Content-Type": "application/json; charset=UTF-8",
+    },
+  });
+  const { html } = (await data.json()) as { html: string };
+  return html;
+};

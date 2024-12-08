@@ -73,13 +73,14 @@ export const Find15: FC = () => {
   return (
     <Container>
       <Flex flexDirection="column" gap={12}>
-        <Typography size="large">find 15</Typography>
+        <Typography size="large">Поиск кроповых клеток</Typography>
         <Flex gap={12} alignItems="center">
           <div>
-            <label>x|y:</label>
+            <label>Ближе:</label>
             <TextInput
               type="text"
               className="text"
+              placeholder="x|y"
               value={start}
               onChange={(e) => setStart(e.target.value)}
             />

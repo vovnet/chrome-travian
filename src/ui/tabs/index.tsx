@@ -13,7 +13,8 @@ export const Item = styled.div<{ isSelected?: boolean; background?: `#${string}`
   flex: 1;
   text-align: center;
   padding: 8px 14px;
-  border-bottom: ${(props) => (props.isSelected ? `2px solid ${tokens.colors.accent}` : "none")};
+  border-bottom: ${(props) =>
+    props.isSelected ? `2px solid ${tokens.colors.accent}` : "2px solid #1f1f1f"};
   transition: color 0.3s;
   color: ${(props) => (props.isSelected ? tokens.colors.accent : tokens.colors.primary)};
   user-select: none;

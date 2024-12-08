@@ -7,6 +7,7 @@ import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
+import { villiages as userVilliages } from "../../index";
 
 const getPosition = (pos: string): TilePosition => {
   const splitted = pos.trim().split("|");
@@ -33,7 +34,7 @@ export const FarmSearch: FC = () => {
     const tiles = await apiMapPosition({ x, y });
 
     const villiages = tiles
-      .filter((t) => t.title?.includes("{k.dt}"))
+      .filter((t) => t.title?.includes("{k.dt}") && !Array.from(userVilliages).includes(t.did))
       .map((t) => {
         const population = t.text?.match(/{k.einwohner} \d*/)?.[0].split("} ")?.[1];
         const alliance = t.text?.match(/{k.allianz} \w*/)?.[0].split("} ")?.[1];

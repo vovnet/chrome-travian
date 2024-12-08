@@ -12,7 +12,15 @@ import "./style.css";
 import { Find15 } from "./components/find-15";
 import { GlobalStyles } from "./variables/global-styles";
 
-console.log("Travian bot started!");
+export const currentVillageId = Number(
+  document.querySelector(".villageInput")?.getAttribute("data-did")
+);
+export const villiages = new Set();
+document
+  .querySelectorAll("span[data-did]")
+  .forEach((v) => villiages.add(Number(v.getAttribute("data-did"))));
+
+console.log("Travian bot started!", { currentVillageId, villiages });
 
 const portal = createPortal("travianBot");
 const root = createRoot(portal);

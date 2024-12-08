@@ -6,6 +6,7 @@ import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
+import { Button } from "../../ui/button";
 
 export const OasisFarmer: FC = () => {
   const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
@@ -137,9 +138,9 @@ export const OasisFarmer: FC = () => {
           />
         </div>
 
-        <button className="textButtonV1 green" disabled={isLoading} onClick={searchHandler}>
+        <Button disabled={isLoading} onClick={searchHandler}>
           Поиск
-        </button>
+        </Button>
       </SearchForm>
 
       {!!tiles.length && (
@@ -173,13 +174,9 @@ export const OasisFarmer: FC = () => {
       </VillageContainer>
 
       {!!tiles.length && (
-        <button
-          className="textButtonV1 green"
-          disabled={isLoading || !checkedFarm.length || isSending}
-          onClick={sendFarmHandler}
-        >
+        <Button disabled={isLoading || !checkedFarm.length || isSending} onClick={sendFarmHandler}>
           Отправить фармить
-        </button>
+        </Button>
       )}
     </Container>
   );

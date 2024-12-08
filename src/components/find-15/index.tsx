@@ -6,6 +6,7 @@ import { apiMapPosition } from "../../client";
 import { getAllPositions } from "../../utils/map";
 import { Tile } from "../../types";
 import { getDistance } from "../../utils";
+import { Button } from "../../ui/button";
 
 const Container = styled.div`
   padding: 16px;
@@ -91,8 +92,7 @@ export const Find15: FC = () => {
           </div>
         </Flex>
 
-        <button
-          className="textButtonV1 green"
+        <Button
           disabled={isLoading}
           onClick={async () => {
             setIsLoading(true);
@@ -113,7 +113,7 @@ export const Find15: FC = () => {
           }}
         >
           Поиск
-        </button>
+        </Button>
 
         <Typography>Прогресс: {progress}</Typography>
 

@@ -6,6 +6,7 @@ import { getDistance } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
+import { Button } from "../../ui/button";
 
 const getPosition = (pos: string): TilePosition => {
   const splitted = pos.trim().split("|");
@@ -60,9 +61,9 @@ export const FarmSearch: FC = () => {
           disabled={isLoading}
           onChange={(e) => setPosition(e.target.value)}
         />
-        <button className="textButtonV1 green" disabled={isLoading} onClick={searchHandler}>
+        <Button disabled={isLoading} onClick={searchHandler}>
           Поиск
-        </button>
+        </Button>
       </Flex>
 
       <Table>

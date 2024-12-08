@@ -5,6 +5,7 @@ import { TroopForm } from "../troop-form";
 import { sleep } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
+import { Button } from "../../ui/button";
 
 type Farm = { x: string; y: string };
 
@@ -126,8 +127,7 @@ export const Farmlist: FC = () => {
           <label>x|y:</label>
           <TextInput ref={inputRef} type="text" className="text" />
 
-          <button
-            className="textButtonV1 green"
+          <Button
             onClick={() => {
               if (inputRef.current) {
                 const value = inputRef.current.value.trim();
@@ -139,7 +139,7 @@ export const Farmlist: FC = () => {
             }}
           >
             Добавить
-          </button>
+          </Button>
         </InputContainer>
 
         {!!farms.size && (
@@ -147,8 +147,7 @@ export const Farmlist: FC = () => {
             <Flex gap={24} alignItems="center">
               <div>{`В списке: ${farms.size}`}</div>
               <div>{`Текущая: ${lastPosition + 1}`}</div>
-              <button
-                className="textButtonV1 green"
+              <Button
                 disabled={isLoading}
                 onClick={() => {
                   setLastPosition(0);
@@ -156,16 +155,12 @@ export const Farmlist: FC = () => {
                 }}
               >
                 Сброс
-              </button>
+              </Button>
             </Flex>
             <TroopForm ref={troopFormRef} />
-            <button
-              className="textButtonV1 green"
-              disabled={!farms.size || isLoading}
-              onClick={sendFarmHandler}
-            >
+            <Button disabled={!farms.size || isLoading} onClick={sendFarmHandler}>
               Отправить фармить
-            </button>
+            </Button>
           </Flex>
         )}
 

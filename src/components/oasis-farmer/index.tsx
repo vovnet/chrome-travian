@@ -11,8 +11,10 @@ import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
 import { Flex } from "../../ui/flex";
 
+type OasisTile = Tile & { distance: number };
+
 export const OasisFarmer: FC = () => {
-  const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
+  const [tiles, setTiles] = useState<OasisTile[]>([]);
   const [position, setPosition] = useState<TilePosition>({ x: 0, y: 0 });
   const [isLoading, setIsLoading] = useState(false);
   const [checkedFarm, setCheckedFarm] = useState<string[]>([]);
@@ -141,7 +143,7 @@ export const OasisFarmer: FC = () => {
       )}
 
       <TableContainer>
-        <Table
+        <Table<OasisTile>
           columns={[
             {
               label: "Ch",
@@ -165,7 +167,7 @@ export const OasisFarmer: FC = () => {
             },
             {
               label: "Dist",
-              renderCell: (item) => item.distance,
+              renderCell: (item) => <>{item.distance}</>,
             },
             {
               label: "Pos",
@@ -178,8 +180,8 @@ export const OasisFarmer: FC = () => {
             {
               label: "Info",
               renderCell: (item) => {
-                const lines = item.text.split("<br>") as string[];
-                const animals: string[] = item.text.match(
+                const lines = item.text?.split("<br>") as string[];
+                const animals = item.text?.match(
                   /<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g
                 );
                 return (
@@ -193,8 +195,8 @@ export const OasisFarmer: FC = () => {
             },
             {
               label: "Last",
-              renderCell: ({ text }: { text: string }) => {
-                const res = text.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
+              renderCell: ({ text }) => {
+                const res = text?.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
                 const strArr = res?.match(/;\d+/g)?.map((v) => v.slice(1)) || [];
                 const isAccent = strArr.length > 1 && Number(strArr[0]) >= Number(strArr[1]);
                 return (

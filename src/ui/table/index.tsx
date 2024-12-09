@@ -2,12 +2,12 @@ import styled from "@emotion/styled";
 import React, { FC } from "react";
 import { tokens } from "../../variables/tokens";
 
-type TableProps = {
-  columns?: { label: string; renderCell: (item: any) => React.ReactElement }[];
-  data?: any[];
+type TableProps<T> = {
+  columns?: { label: string; renderCell: (item: T) => React.ReactElement }[];
+  data?: T[];
 };
 
-export const Table: FC<TableProps> = ({ columns, data }) => {
+export function Table<T>({ columns, data }: TableProps<T>) {
   return (
     <StyledTable>
       <StyledRow>
@@ -24,7 +24,7 @@ export const Table: FC<TableProps> = ({ columns, data }) => {
       ))}
     </StyledTable>
   );
-};
+}
 
 /////////////// Styles
 

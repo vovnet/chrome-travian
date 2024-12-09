@@ -1,6 +1,5 @@
 import React, { FC, useRef, useState } from "react";
 import { getDistance } from "../../utils";
-import { Container, SearchForm, VillageContainer } from "./styles";
 import { TroopForm } from "../troop-form";
 import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
@@ -8,6 +7,9 @@ import { Typography } from "../../ui/text";
 import { apiMapPosition, apiTileDetails } from "../../client";
 import { Button } from "../../ui/button";
 import { TextField } from "../../ui/text-field";
+import { Table } from "../../ui/table";
+import styled from "@emotion/styled";
+import { Flex } from "../../ui/flex";
 
 export const OasisFarmer: FC = () => {
   const [tiles, setTiles] = useState<(Tile & { distance: number })[]>([]);
@@ -87,11 +89,9 @@ export const OasisFarmer: FC = () => {
     const oaz = tiles
       .filter((t) => t.title === "{k.fo}")
       .map((t) => {
-        const find = t.text?.match(/<div class="inlineIcon/);
         return {
           ...t,
           distance: getDistance(t.position.x, position.x, t.position.y, position.y),
-          text: find ? t.text?.slice(find.index, t.text.length) : "",
         };
       })
       .sort((a, b) => a.distance - b.distance);
@@ -139,28 +139,74 @@ export const OasisFarmer: FC = () => {
         </>
       )}
 
-      <VillageContainer>
-        {tiles?.map((t) => (
-          <Village
-            key={`${t.position.x}|${t.position.y}`}
-            distance={t.distance}
-            position={t.position}
-            text={t.text}
-            disabled={isSending}
-            checked={checkedFarm.includes(`${t.position.x}|${t.position.y}`)}
-            onChecked={(id, checked) => {
-              console.log({ id, checked });
-              if (checked) {
-                setCheckedFarm([...checkedFarm, id]);
-              } else {
-                const state = [...checkedFarm];
-                state.splice(checkedFarm.indexOf(id), 1);
-                setCheckedFarm(state);
-              }
-            }}
-          />
-        ))}
-      </VillageContainer>
+      <TableContainer>
+        <Table
+          columns={[
+            {
+              label: "Ch",
+              renderCell: (item) => (
+                <input
+                  type="checkbox"
+                  checked={checkedFarm.includes(`${item.position.x}|${item.position.y}`)}
+                  disabled={isSending}
+                  onChange={(e) => {
+                    const id = `${item.position.x}|${item.position.y}`;
+                    if (e.target.checked) {
+                      setCheckedFarm([...checkedFarm, id]);
+                    } else {
+                      const state = [...checkedFarm];
+                      state.splice(checkedFarm.indexOf(id), 1);
+                      setCheckedFarm(state);
+                    }
+                  }}
+                />
+              ),
+            },
+            {
+              label: "Dist",
+              renderCell: (item) => item.distance,
+            },
+            {
+              label: "Pos",
+              renderCell: (item) => (
+                <a
+                  href={`/karte.php?x=${item.position.x}&y=${item.position.y}`}
+                >{`${item.distance} (${item.position.x}|${item.position.y})`}</a>
+              ),
+            },
+            {
+              label: "Info",
+              renderCell: (item) => {
+                const lines = item.text.split("<br>") as string[];
+                const animals: string[] = item.text.match(
+                  /<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g
+                );
+                return (
+                  <Flex gap={8}>
+                    {animals?.map((a) => (
+                      <Flex gap={2} dangerouslySetInnerHTML={{ __html: a }} />
+                    ))}
+                  </Flex>
+                );
+              },
+            },
+            {
+              label: "Last",
+              renderCell: ({ text }: { text: string }) => {
+                const res = text.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
+                const strArr = res?.match(/;\d+/g)?.map((v) => v.slice(1)) || [];
+                const isAccent = strArr.length > 1 && Number(strArr[0]) >= Number(strArr[1]);
+                return (
+                  <StyledResources isAccent={isAccent}>
+                    {strArr.length > 1 && `${strArr[0]} / ${strArr[1]}`}
+                  </StyledResources>
+                );
+              },
+            },
+          ]}
+          data={tiles}
+        />
+      </TableContainer>
 
       {!!tiles.length && (
         <Button disabled={isLoading || !checkedFarm.length || isSending} onClick={sendFarmHandler}>
@@ -170,3 +216,27 @@ export const OasisFarmer: FC = () => {
     </Container>
   );
 };
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: auto;
+  padding: 24px 16px;
+`;
+
+const SearchForm = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+`;
+
+const TableContainer = styled.div`
+  max-height: 600px;
+  overflow: auto;
+`;
+
+const StyledResources = styled.span<{ isAccent?: boolean }>`
+  color: ${(props) => (props.isAccent ? "#02e202" : "inherit")};
+`;

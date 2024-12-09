@@ -17,7 +17,7 @@ export const tokens = {
       error: "",
     },
     background: {
-      primary: "#d8d8d8",
+      primary: "#3a3a3a",
     },
   },
 

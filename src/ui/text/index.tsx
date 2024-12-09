@@ -4,6 +4,7 @@ type TextSize = "small" | "medium" | "large";
 
 type TextProps = {
   size?: TextSize;
+  kind?: "default" | "danger" | "warning" | "success";
 };
 
 export const Typography = styled.div<TextProps>`

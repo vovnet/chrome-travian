@@ -169,7 +169,9 @@ export const Farmlist: FC = () => {
             <Flex gap={24} alignItems="center">
               <div>{`${chrome.i18n.getMessage("inList")}: ${farms.size}`}</div>
               <div>{`${chrome.i18n.getMessage("current")}: ${lastPosition + 1}`}</div>
-              <div>{`${chrome.i18n.getMessage("errors")}: ${stopList.size}`}</div>
+              <StyledText color={stopList.size ? "#e90800" : undefined}>{`${chrome.i18n.getMessage(
+                "errors"
+              )}: ${stopList.size}`}</StyledText>
             </Flex>
             <TroopForm ref={troopFormRef} />
             <Button disabled={!farms.size || isLoading} onClick={sendFarmHandler}>
@@ -269,4 +271,8 @@ const CurrentPoint = styled.div`
   height: 12px;
   background-color: #ecb501;
   border-radius: 50%;
+`;
+
+const StyledText = styled.div<{ color?: string }>`
+  color: ${(props) => props.color};
 `;

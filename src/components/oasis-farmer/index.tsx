@@ -1,7 +1,6 @@
 import React, { FC, useRef, useState } from "react";
 import { getDistance } from "../../utils";
 import { TroopForm } from "../troop-form";
-import { Village } from "../village";
 import { TilePosition, Tile } from "../../types";
 import { Typography } from "../../ui/text";
 import { apiMapPosition, apiTileDetails } from "../../client";

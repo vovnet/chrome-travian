@@ -1,5 +1,4 @@
 import React, { FC, useEffect, useRef, useState } from "react";
-import { TextInput, InputContainer, Container, List, FarmLink, ListItem } from "./styles";
 import { Flex } from "../../ui/flex";
 import { TroopForm } from "../troop-form";
 import { sleep } from "../../utils";
@@ -8,6 +7,8 @@ import { Typography } from "../../ui/text";
 import { Button } from "../../ui/button";
 import { apiTileDetails } from "../../client";
 import { isFailedLastAttack, lastLootedResources } from "../../client/parser";
+import { Table } from "../../ui/table";
+import styled from "@emotion/styled";
 
 type Farm = { x: string; y: string };
 
@@ -177,36 +178,95 @@ export const Farmlist: FC = () => {
           </Flex>
         )}
 
-        <List gap={8}>
-          {Array.from(farms)
-            .map((v) => {
+        <TableContainer>
+          <Table<{ id: string; x: string; y: string; index: number }>
+            columns={[
+              {
+                label: "Att",
+                renderCell: ({ index }) => (
+                  <Flex justifyContent="center">{index === lastPosition && <CurrentPoint />}</Flex>
+                ),
+              },
+              { label: "#", renderCell: ({ index }) => <>{index + 1}</> },
+              {
+                label: "Pos",
+                renderCell: ({ id, x, y, index }) => (
+                  <FarmLink
+                    href={`/karte.php?x=${x}&y=${y}`}
+                    isDanger={stopList.has(id)}
+                  >{`(${x}|${y})`}</FarmLink>
+                ),
+              },
+              {
+                label: "Del",
+                renderCell: ({ id }) => (
+                  <button
+                    type="button"
+                    className="icon"
+                    onClick={() => {
+                      const removedIndex = Array.from(farms).findIndex((i) => i === id);
+                      const isRemoved = remove(id);
+                      if (isRemoved && lastPosition > removedIndex) {
+                        setLastPosition(lastPosition - 1);
+                        localStorage.setItem(LAST_POSITION, (lastPosition - 1).toString());
+                      }
+                    }}
+                  >
+                    <img src="/img/x.gif" className="del" />
+                  </button>
+                ),
+              },
+            ]}
+            data={Array.from(farms).map((v, index) => {
               const [x, y] = v.split("|");
-              return { id: v, x, y };
-            })
-            .map(({ id, x, y }, index) => (
-              <ListItem key={id} alignItems="center" gap={8} isCurrent={index === lastPosition}>
-                <FarmLink
-                  href={`/karte.php?x=${x}&y=${y}`}
-                  isDanger={stopList.has(id)}
-                >{`(${x}|${y})`}</FarmLink>
-                <button
-                  type="button"
-                  className="icon"
-                  onClick={() => {
-                    const removedIndex = Array.from(farms).findIndex((i) => i === id);
-                    const isRemoved = remove(id);
-                    if (isRemoved && lastPosition > removedIndex) {
-                      setLastPosition(lastPosition - 1);
-                      localStorage.setItem(LAST_POSITION, (lastPosition - 1).toString());
-                    }
-                  }}
-                >
-                  <img src="/img/x.gif" className="del" />
-                </button>
-              </ListItem>
-            ))}
-        </List>
+              return { id: v, x, y, index };
+            })}
+          />
+        </TableContainer>
       </Flex>
     </Container>
   );
 };
+
+/////////// Styles
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  min-width: 250px;
+`;
+
+const InputContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+`;
+
+const TextInput = styled.input`
+  width: 60px;
+`;
+
+const List = styled(Flex)`
+  flex-wrap: wrap;
+  max-width: 340px;
+  max-height: 600px;
+  overflow: auto;
+`;
+
+const FarmLink = styled.a<{ isDanger?: boolean }>`
+  min-width: 60px;
+  background-color: ${(props) => (props.isDanger ? "#290201" : "inherit")};
+`;
+
+const TableContainer = styled.div`
+  max-height: 600px;
+  overflow: auto;
+`;
+
+const CurrentPoint = styled.div`
+  width: 12px;
+  height: 12px;
+  background-color: #ecb501;
+  border-radius: 50%;
+`;

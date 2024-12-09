@@ -182,7 +182,7 @@ export const Farmlist: FC = () => {
           <Table<{ id: string; x: string; y: string; index: number }>
             columns={[
               {
-                label: "Att",
+                label: "🔪",
                 renderCell: ({ index }) => (
                   <Flex justifyContent="center">{index === lastPosition && <CurrentPoint />}</Flex>
                 ),

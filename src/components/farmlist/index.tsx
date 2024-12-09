@@ -9,6 +9,7 @@ import { apiTileDetails } from "../../client";
 import { isFailedLastAttack, lastLootedResources } from "../../client/parser";
 import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
+import { CloseIcon } from "../../icons/close-icon";
 
 type Farm = { x: string; y: string };
 
@@ -202,9 +203,7 @@ export const Farmlist: FC = () => {
               {
                 label: "Del",
                 renderCell: ({ id }) => (
-                  <button
-                    type="button"
-                    className="icon"
+                  <StyledIconButton
                     onClick={() => {
                       const removedIndex = Array.from(farms).findIndex((i) => i === id);
                       const isRemoved = remove(id);
@@ -214,8 +213,8 @@ export const Farmlist: FC = () => {
                       }
                     }}
                   >
-                    <img src="/img/x.gif" className="del" />
-                  </button>
+                    <CloseIcon />
+                  </StyledIconButton>
                 ),
               },
             ]}
@@ -275,4 +274,18 @@ const CurrentPoint = styled.div`
 
 const StyledText = styled.div<{ color?: string }>`
   color: ${(props) => props.color};
+`;
+
+const StyledIconButton = styled.button`
+  padding: 0;
+
+  & svg {
+    width: 14px;
+    height: 14px;
+    color: #e75936;
+
+    &:hover {
+      color: orange;
+    }
+  }
 `;

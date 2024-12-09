@@ -1,8 +1,11 @@
 {
-  "name": "Travian Bot",
-  "description": "Farmer",
+  "name": "Farmian",
+  "description": "Travian Bot Farmer",
   "version": "1.0.0",
   "manifest_version": 3,
+  "icons": {
+    "128": "/icons/icon128.png"
+  },
   "permissions": ["activeTab", "storage"],
   "host_permissions": ["https://*.travian.com/*"],
   "default_locale": "en",

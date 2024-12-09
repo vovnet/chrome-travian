@@ -172,7 +172,7 @@ export const OasisFarmer: FC = () => {
               renderCell: (item) => (
                 <a
                   href={`/karte.php?x=${item.position.x}&y=${item.position.y}`}
-                >{`${item.distance} (${item.position.x}|${item.position.y})`}</a>
+                >{`${item.position.x}|${item.position.y}`}</a>
               ),
             },
             {

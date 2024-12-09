@@ -38,20 +38,24 @@ const StyledTable = styled.table`
 
 const StyledRow = styled.tr`
   border: 1px solid ${tokens.colors.accent};
+
+  &:hover {
+    background-color: #2e2e2e;
+  }
 `;
 
 const StyledHead = styled.th`
   border: 1px solid ${tokens.colors.accent};
-  background-color: ${tokens.colors.background.primary};
+  background-color: inherit;
   border: 1px solid ${tokens.colors.accent};
-  text-align: center;
+  text-align: inherit;
   padding: 6px;
 `;
 
 const StyledData = styled.td`
   border: 1px solid ${tokens.colors.accent};
-  background-color: ${tokens.colors.background.primary};
+  background-color: inherit;
   border: 1px solid ${tokens.colors.accent};
-  text-align: center;
+  text-align: inherit;
   padding: 6px;
 `;

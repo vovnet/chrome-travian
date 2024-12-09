@@ -20,7 +20,8 @@ export const OasisFarmer: FC = () => {
   const [isSending, setIsSending] = useState(false);
 
   const sendFarm = async () => {
-    checkedFarm.map(async (v) => {
+    for (let i = 0; i < checkedFarm.length; i++) {
+      const v = checkedFarm[i];
       console.log("send troop to: ", v);
       const [x, y] = v.split("|");
 
@@ -70,7 +71,7 @@ export const OasisFarmer: FC = () => {
           await fetch("/build.php?gid=16&tt=2", { method: "POST", body: sendFormData });
         }
       }
-    });
+    }
   };
 
   const sendFarmHandler = async () => {
@@ -128,7 +129,7 @@ export const OasisFarmer: FC = () => {
         </div>
 
         <Button disabled={isLoading} onClick={searchHandler}>
-          Поиск
+          {chrome.i18n.getMessage("search")}
         </Button>
       </SearchForm>
 

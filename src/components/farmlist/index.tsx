@@ -204,6 +204,7 @@ export const Farmlist: FC = () => {
                 label: "Del",
                 renderCell: ({ id }) => (
                   <StyledIconButton
+                    disabled={isLoading}
                     onClick={() => {
                       const removedIndex = Array.from(farms).findIndex((i) => i === id);
                       const isRemoved = remove(id);
@@ -282,10 +283,12 @@ const StyledIconButton = styled.button`
   & svg {
     width: 14px;
     height: 14px;
-    color: #e75936;
+    color: ${(props) => (props.disabled ? "#e7250c55" : "#e75936")};
+  }
 
-    &:hover {
-      color: orange;
+  &:hover {
+    & svg {
+      color: ${(props) => (props.disabled ? "#e7250c55" : "#faa23e")};
     }
   }
 `;

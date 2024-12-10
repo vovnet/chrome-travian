@@ -169,6 +169,13 @@ export const OasisFarmer: FC = () => {
               renderCell: (item) => <>{item.distance}</>,
             },
             {
+              label: "Type",
+              renderCell: (item) => {
+                const make = item.text?.match(/\d+%/g)?.join(" ");
+                return <>{make}</>;
+              },
+            },
+            {
               label: "Pos",
               renderCell: (item) => (
                 <a
@@ -198,10 +205,16 @@ export const OasisFarmer: FC = () => {
                 const res = text?.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
                 const strArr = res?.match(/;\d+/g)?.map((v) => v.slice(1)) || [];
                 const isAccent = strArr.length > 1 && Number(strArr[0]) >= Number(strArr[1]);
+                const dateArr = text?.match(/{b:ri\d*}.*{b.ri\d}/g)?.[0].split(" ");
+                const date =
+                  dateArr && dateArr?.length > 3 ? `${dateArr[1]}${dateArr[2]}` : undefined;
                 return (
-                  <StyledResources isAccent={isAccent}>
-                    {strArr.length > 1 && `${strArr[0]} / ${strArr[1]}`}
-                  </StyledResources>
+                  <Flex flexDirection="column">
+                    <StyledResources isAccent={isAccent}>
+                      {strArr.length > 1 && `${strArr[0]} / ${strArr[1]}`}
+                    </StyledResources>
+                    {date}
+                  </Flex>
                 );
               },
             },

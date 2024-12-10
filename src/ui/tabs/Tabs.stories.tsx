@@ -1,5 +1,8 @@
 import { Meta, StoryObj } from "@storybook/react/*";
 import { Tabs } from ".";
+import { CloseIcon } from "../../icons/close-icon";
+import React from "react";
+import { SettingsIcon } from "../../icons/settings-icon";
 
 type Story = StoryObj<typeof Tabs>;
 
@@ -23,6 +26,10 @@ export const Default: Story = {
       {
         id: "3",
         title: "Third",
+      },
+      {
+        id: "4",
+        title: <SettingsIcon />,
       },
     ],
   },

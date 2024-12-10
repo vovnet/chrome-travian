@@ -82,5 +82,14 @@
   },
   "errors": {
     "message": "Errors"
+  },
+  "donationTitle": {
+    "message": "Donation"
+  },
+  "donationText": {
+    "message": "The bot is absolutely free, but you can help in its development by transferring any amount. Thank you!"
+  },
+  "author": {
+    "message": "Vladimir S."
   }
 }

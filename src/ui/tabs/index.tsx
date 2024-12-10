@@ -1,32 +1,9 @@
 import styled from "@emotion/styled";
-import React, { FC, useState } from "react";
+import React, { FC, ReactNode, useState } from "react";
 import { tokens } from "../../variables/tokens";
 
-export const Container = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #1f1f1f;
-`;
-
-export const Item = styled.div<{ isSelected?: boolean; background?: `#${string}` }>`
-  flex: 1;
-  text-align: center;
-  padding: 8px 14px;
-  border-bottom: ${(props) =>
-    props.isSelected ? `2px solid ${tokens.colors.accent}` : "2px solid #1f1f1f"};
-  transition: color 0.3s;
-  color: ${(props) => (props.isSelected ? tokens.colors.accent : tokens.colors.primary)};
-  user-select: none;
-
-  &:hover {
-    cursor: pointer;
-    border-bottom: 2px solid ${tokens.colors.accent};
-  }
-`;
-
 type TabsProps = {
-  items?: { id: string; title: string; styles?: { background?: `#${string}` } }[];
+  items?: { id: string; title: ReactNode; styles?: { background?: `#${string}` } }[];
   selected?: string;
   onChange?: (id: string) => void;
 };
@@ -56,3 +33,29 @@ export const Tabs: FC<TabsProps> = ({
     </Container>
   );
 };
+
+////////// Styles
+
+export const Container = styled.div`
+  display: flex;
+  align-items: end;
+  justify-content: center;
+  background-color: #1f1f1f;
+`;
+
+export const Item = styled.div<{ isSelected?: boolean; background?: `#${string}` }>`
+  flex: 1;
+  height: 100%;
+  text-align: center;
+  padding: 8px 14px;
+  border-bottom: ${(props) =>
+    props.isSelected ? `2px solid ${tokens.colors.accent}` : "2px solid #1f1f1f"};
+  transition: color 0.3s;
+  color: ${(props) => (props.isSelected ? tokens.colors.accent : tokens.colors.primary)};
+  user-select: none;
+
+  &:hover {
+    cursor: pointer;
+    border-bottom: 2px solid ${tokens.colors.accent};
+  }
+`;

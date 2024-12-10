@@ -11,6 +11,8 @@ import { Settings } from "./components/settings";
 import "./style.css";
 import { Find15 } from "./components/find-15";
 import { GlobalStyles } from "./variables/global-styles";
+import styled from "@emotion/styled";
+import { SettingsIcon } from "./icons/settings-icon";
 
 export const currentVillageId = Number(
   document.querySelector(".villageInput")?.getAttribute("data-did")
@@ -43,7 +45,14 @@ const App: FC = () => {
             { id: "farm", title: chrome.i18n.getMessage("farmlist") },
             { id: "searchFarm", title: chrome.i18n.getMessage("farmSearch") },
             { id: "15", title: chrome.i18n.getMessage("crop") },
-            { id: "settings", title: chrome.i18n.getMessage("settings") },
+            {
+              id: "settings",
+              title: (
+                <IconWrapper>
+                  <SettingsIcon />
+                </IconWrapper>
+              ),
+            },
           ]}
           selected={page}
           onChange={setPage}
@@ -59,3 +68,14 @@ const App: FC = () => {
 };
 
 root.render(<App />);
+
+//////// Styles
+const IconWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+
+  & svg {
+    width: 14px;
+    height: 14px;
+  }
+`;

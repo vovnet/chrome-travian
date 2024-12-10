@@ -7,30 +7,7 @@ import { getAllPositions } from "../../utils/map";
 import { Tile } from "../../types";
 import { getDistance } from "../../utils";
 import { Button } from "../../ui/button";
-
-const Container = styled.div`
-  padding: 16px;
-`;
-
-const Table = styled.div`
-  display: grid;
-  max-width: 400px;
-  max-height: 500px;
-  overflow: auto;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
-`;
-
-const TextInput = styled.input`
-  width: 60px;
-`;
-
-const Crop = styled.div<{ isNine?: boolean }>`
-  display: flex;
-  gap: 4px;
-  justify-content: center;
-  background-color: ${(props) => (props.isNine ? "#cec47b" : "#DAC734")};
-`;
+import { Layout } from "../../ui/layout";
 
 const FARM_15 = "{k.vt} {k.f6}";
 const FARM_9 = "{k.vt} {k.f1}";
@@ -72,9 +49,10 @@ export const Find15: FC = () => {
   }, [allTiles, start, isNine]);
 
   return (
-    <Container>
+    <Layout
+      title={<Typography size="large">{chrome.i18n.getMessage("searchOfCropTitle")}</Typography>}
+    >
       <Flex flexDirection="column" gap={12}>
-        <Typography size="large">{chrome.i18n.getMessage("searchOfCropTitle")}</Typography>
         <Flex gap={12} alignItems="center">
           <div>
             <label>{chrome.i18n.getMessage("closer")}:</label>
@@ -131,6 +109,28 @@ export const Find15: FC = () => {
           })}
         </Table>
       </Flex>
-    </Container>
+    </Layout>
   );
 };
+
+//////////// Styles
+
+const Table = styled.div`
+  display: grid;
+  max-width: 400px;
+  max-height: 500px;
+  overflow: auto;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+`;
+
+const TextInput = styled.input`
+  width: 60px;
+`;
+
+const Crop = styled.div<{ isNine?: boolean }>`
+  display: flex;
+  gap: 4px;
+  justify-content: center;
+  background-color: ${(props) => (props.isNine ? "#cec47b" : "#DAC734")};
+`;

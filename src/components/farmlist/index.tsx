@@ -10,6 +10,7 @@ import { isFailedLastAttack, lastLootedResources } from "../../client/parser";
 import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
 import { CloseIcon } from "../../icons/close-icon";
+import { Layout } from "../../ui/layout";
 
 type Farm = { x: string; y: string };
 
@@ -133,9 +134,10 @@ export const Farmlist: FC = () => {
   };
 
   return (
-    <Container>
+    <Layout
+      title={<Typography size="large">{chrome.i18n.getMessage("listOfFarmsTitle")}</Typography>}
+    >
       <Flex flexDirection="column" gap={12}>
-        <Typography size="large">{chrome.i18n.getMessage("listOfFarmsTitle")}</Typography>
         <InputContainer>
           <label>x|y:</label>
           <TextInput ref={inputRef} type="text" className="text" />
@@ -226,18 +228,11 @@ export const Farmlist: FC = () => {
           />
         </TableContainer>
       </Flex>
-    </Container>
+    </Layout>
   );
 };
 
 /////////// Styles
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  padding: 12px;
-  min-width: 250px;
-`;
 
 const InputContainer = styled.div`
   display: flex;

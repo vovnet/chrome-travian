@@ -9,6 +9,7 @@ import { TextField } from "../../ui/text-field";
 import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
 import { Flex } from "../../ui/flex";
+import { Layout } from "../../ui/layout";
 
 type OasisTile = Tile & { distance: number };
 
@@ -105,8 +106,9 @@ export const OasisFarmer: FC = () => {
 
   console.log({ checkedFarm });
   return (
-    <Container>
-      <Typography size="large">{chrome.i18n.getMessage("searchOfOasisTitle")}</Typography>
+    <Layout
+      title={<Typography size="large">{chrome.i18n.getMessage("searchOfOasisTitle")}</Typography>}
+    >
       <SearchForm>
         <div>
           <label>x:</label>
@@ -138,97 +140,96 @@ export const OasisFarmer: FC = () => {
         <>
           <span>{`Выбрано: ${checkedFarm.length} из ${tiles.length}`}</span>
           <TroopForm ref={troopFormRef} />
+          <Button
+            disabled={isLoading || !checkedFarm.length || isSending}
+            onClick={sendFarmHandler}
+          >
+            {chrome.i18n.getMessage("sendToFarm")}
+          </Button>
+          <TableContainer>
+            <Table<OasisTile>
+              columns={[
+                {
+                  label: "Ch",
+                  renderCell: (item) => (
+                    <input
+                      type="checkbox"
+                      checked={checkedFarm.includes(`${item.position.x}|${item.position.y}`)}
+                      disabled={isSending}
+                      onChange={(e) => {
+                        const id = `${item.position.x}|${item.position.y}`;
+                        if (e.target.checked) {
+                          setCheckedFarm([...checkedFarm, id]);
+                        } else {
+                          const state = [...checkedFarm];
+                          state.splice(checkedFarm.indexOf(id), 1);
+                          setCheckedFarm(state);
+                        }
+                      }}
+                    />
+                  ),
+                },
+                {
+                  label: "Dist",
+                  renderCell: (item) => <>{item.distance}</>,
+                },
+                {
+                  label: "Type",
+                  renderCell: (item) => {
+                    const make = item.text?.match(/\d+%/g)?.join(" ");
+                    return <>{make}</>;
+                  },
+                },
+                {
+                  label: "Pos",
+                  renderCell: (item) => (
+                    <a
+                      href={`/karte.php?x=${item.position.x}&y=${item.position.y}`}
+                    >{`${item.position.x}|${item.position.y}`}</a>
+                  ),
+                },
+                {
+                  label: "Info",
+                  renderCell: (item) => {
+                    const lines = item.text?.split("<br>") as string[];
+                    const animals = item.text?.match(
+                      /<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g
+                    );
+                    return (
+                      <Flex gap={8}>
+                        {animals?.map((a) => (
+                          <Flex gap={2} dangerouslySetInnerHTML={{ __html: a }} />
+                        ))}
+                      </Flex>
+                    );
+                  },
+                },
+                {
+                  label: "Last",
+                  renderCell: ({ text }) => {
+                    const res = text?.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
+                    const strArr = res?.match(/;\d+/g)?.map((v) => v.slice(1)) || [];
+                    const isAccent = strArr.length > 1 && Number(strArr[0]) >= Number(strArr[1]);
+                    const dateArr = text?.match(/{b:ri\d*}.*{b.ri\d}/g)?.[0].split(" ");
+                    const date =
+                      dateArr && dateArr?.length > 3 ? `${dateArr[1]}${dateArr[2]}` : undefined;
+                    return (
+                      <Flex flexDirection="column">
+                        <StyledResources isAccent={isAccent}>
+                          {strArr.length > 1 && `${strArr[0]} / ${strArr[1]}`}
+                        </StyledResources>
+                        {date}
+                      </Flex>
+                    );
+                  },
+                },
+              ]}
+              data={tiles}
+            />
+          </TableContainer>
         </>
       )}
-
-      <TableContainer>
-        <Table<OasisTile>
-          columns={[
-            {
-              label: "Ch",
-              renderCell: (item) => (
-                <input
-                  type="checkbox"
-                  checked={checkedFarm.includes(`${item.position.x}|${item.position.y}`)}
-                  disabled={isSending}
-                  onChange={(e) => {
-                    const id = `${item.position.x}|${item.position.y}`;
-                    if (e.target.checked) {
-                      setCheckedFarm([...checkedFarm, id]);
-                    } else {
-                      const state = [...checkedFarm];
-                      state.splice(checkedFarm.indexOf(id), 1);
-                      setCheckedFarm(state);
-                    }
-                  }}
-                />
-              ),
-            },
-            {
-              label: "Dist",
-              renderCell: (item) => <>{item.distance}</>,
-            },
-            {
-              label: "Type",
-              renderCell: (item) => {
-                const make = item.text?.match(/\d+%/g)?.join(" ");
-                return <>{make}</>;
-              },
-            },
-            {
-              label: "Pos",
-              renderCell: (item) => (
-                <a
-                  href={`/karte.php?x=${item.position.x}&y=${item.position.y}`}
-                >{`${item.position.x}|${item.position.y}`}</a>
-              ),
-            },
-            {
-              label: "Info",
-              renderCell: (item) => {
-                const lines = item.text?.split("<br>") as string[];
-                const animals = item.text?.match(
-                  /<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g
-                );
-                return (
-                  <Flex gap={8}>
-                    {animals?.map((a) => (
-                      <Flex gap={2} dangerouslySetInnerHTML={{ __html: a }} />
-                    ))}
-                  </Flex>
-                );
-              },
-            },
-            {
-              label: "Last",
-              renderCell: ({ text }) => {
-                const res = text?.match(/;\d+&#x202c;\/&#x202d;\d+/g)?.[0];
-                const strArr = res?.match(/;\d+/g)?.map((v) => v.slice(1)) || [];
-                const isAccent = strArr.length > 1 && Number(strArr[0]) >= Number(strArr[1]);
-                const dateArr = text?.match(/{b:ri\d*}.*{b.ri\d}/g)?.[0].split(" ");
-                const date =
-                  dateArr && dateArr?.length > 3 ? `${dateArr[1]}${dateArr[2]}` : undefined;
-                return (
-                  <Flex flexDirection="column">
-                    <StyledResources isAccent={isAccent}>
-                      {strArr.length > 1 && `${strArr[0]} / ${strArr[1]}`}
-                    </StyledResources>
-                    {date}
-                  </Flex>
-                );
-              },
-            },
-          ]}
-          data={tiles}
-        />
-      </TableContainer>
-
-      {!!tiles.length && (
-        <Button disabled={isLoading || !checkedFarm.length || isSending} onClick={sendFarmHandler}>
-          {chrome.i18n.getMessage("sendToFarm")}
-        </Button>
-      )}
-    </Container>
+    </Layout>
   );
 };
 

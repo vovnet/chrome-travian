@@ -1,5 +1,5 @@
 import React, { FC, useState } from "react";
-import { Container, Table, Cell, TextInput } from "./styles";
+import { Table, Cell, TextInput } from "./styles";
 import { Flex } from "../../ui/flex";
 import { Tile, TilePosition } from "../../types";
 import { getDistance } from "../../utils";
@@ -8,15 +8,7 @@ import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
 import { villiages as userVilliages } from "../../index";
-
-const getPosition = (pos: string): TilePosition => {
-  const splitted = pos.trim().split("|");
-  if (splitted.length < 2) {
-    throw new Error("Invalid position format!");
-  }
-  const [x, y] = splitted.map(Number);
-  return { x, y };
-};
+import { Layout } from "../../ui/layout";
 
 type VilliageTile = Tile & { distance: number; population?: string; alliance?: string };
 
@@ -51,8 +43,11 @@ export const FarmSearch: FC = () => {
   };
 
   return (
-    <Container>
-      <Typography size="large">{chrome.i18n.getMessage("searchOfOasisVilliages")}</Typography>
+    <Layout
+      title={
+        <Typography size="large">{chrome.i18n.getMessage("searchOfOasisVilliages")}</Typography>
+      }
+    >
       <Flex gap={8} alignItems="center">
         <label>x|y:</label>
         <TextInput
@@ -104,6 +99,15 @@ export const FarmSearch: FC = () => {
           );
         })}
       </Table>
-    </Container>
+    </Layout>
   );
+};
+
+const getPosition = (pos: string): TilePosition => {
+  const splitted = pos.trim().split("|");
+  if (splitted.length < 2) {
+    throw new Error("Invalid position format!");
+  }
+  const [x, y] = splitted.map(Number);
+  return { x, y };
 };

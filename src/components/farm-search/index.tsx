@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import { Table, Cell, TextInput } from "./styles";
 import { Flex } from "../../ui/flex";
 import { Tile, TilePosition } from "../../types";
 import { getDistance } from "../../utils";
@@ -9,6 +8,8 @@ import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
 import { villiages as userVilliages } from "../../index";
 import { Layout } from "../../ui/layout";
+import { Table } from "../../ui/table";
+import styled from "@emotion/styled";
 
 type VilliageTile = Tile & { distance: number; population?: string; alliance?: string };
 
@@ -37,8 +38,6 @@ export const FarmSearch: FC = () => {
       .sort((a, b) => a.distance - b.distance);
 
     setVilliages(villiages);
-
-    // console.log({ villiages });
     setIsLoading(false);
   };
 
@@ -62,43 +61,62 @@ export const FarmSearch: FC = () => {
         </Button>
       </Flex>
 
-      <Table>
-        <Cell>{chrome.i18n.getMessage("tableDist")}</Cell>
-        <Cell>{chrome.i18n.getMessage("tablePos")}</Cell>
-        <Cell>{chrome.i18n.getMessage("tableAlly")}</Cell>
-        <Cell>{chrome.i18n.getMessage("tablePop")}</Cell>
-        <Cell>✅</Cell>
-        {villiages?.map((v) => {
-          const vPos = `${v.position.x}|${v.position.y}`;
-          const isCurrentVilliage = position === vPos;
-          const isChecked = farms.has(vPos);
-          return (
-            <>
-              <Cell isWarning={isCurrentVilliage}>{v.distance}</Cell>
-              <Cell isWarning={isCurrentVilliage}>
-                <a
-                  href={`/karte.php?x=${v.position.x}&y=${v.position.y}`}
-                >{`(${v.position.x}|${v.position.y})`}</a>
-              </Cell>
-              <Cell isWarning={isCurrentVilliage}>{v.alliance}</Cell>
-              <Cell isWarning={isCurrentVilliage}>{v.population}</Cell>
-              <Cell isWarning={isCurrentVilliage}>
-                <input
-                  type="checkbox"
-                  checked={isChecked}
-                  onChange={(e) => {
-                    if (isChecked) {
-                      remove(vPos);
-                    } else {
-                      add(vPos);
+      {!!villiages?.length && (
+        <TableWrapper>
+          <Table<VilliageTile>
+            columns={[
+              {
+                label: chrome.i18n.getMessage("tableDist"),
+                renderCell: ({ distance }) => <>{distance}</>,
+              },
+              {
+                label: chrome.i18n.getMessage("tablePos"),
+                renderCell: ({ position }) => (
+                  <>
+                    {
+                      <a
+                        href={`/karte.php?x=${position.x}&y=${position.y}`}
+                      >{`(${position.x}|${position.y})`}</a>
                     }
-                  }}
-                />
-              </Cell>
-            </>
-          );
-        })}
-      </Table>
+                  </>
+                ),
+              },
+              {
+                label: chrome.i18n.getMessage("tableAlly"),
+                renderCell: ({ alliance }) => <>{alliance}</>,
+              },
+              {
+                label: chrome.i18n.getMessage("tablePop"),
+                renderCell: ({ population }) => <>{population}</>,
+              },
+              {
+                label: "✅",
+                renderCell: ({ position }) => {
+                  const vPos = `${position.x}|${position.y}`;
+                  const isChecked = farms.has(vPos);
+
+                  return (
+                    <>
+                      <input
+                        type="checkbox"
+                        checked={isChecked}
+                        onChange={(e) => {
+                          if (isChecked) {
+                            remove(vPos);
+                          } else {
+                            add(vPos);
+                          }
+                        }}
+                      />
+                    </>
+                  );
+                },
+              },
+            ]}
+            data={villiages}
+          />
+        </TableWrapper>
+      )}
     </Layout>
   );
 };
@@ -111,3 +129,13 @@ const getPosition = (pos: string): TilePosition => {
   const [x, y] = splitted.map(Number);
   return { x, y };
 };
+
+//////////// Styles
+const TableWrapper = styled.div`
+  max-height: 600px;
+  overflow: auto;
+`;
+
+const TextInput = styled.input`
+  width: 60px;
+`;

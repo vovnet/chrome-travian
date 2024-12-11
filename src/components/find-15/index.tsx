@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import React, { FC, useEffect, useMemo, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { Typography } from "../../ui/text";
 import { Flex } from "../../ui/flex";
 import { apiMapPosition } from "../../client";
@@ -20,10 +20,6 @@ export const Find15: FC = () => {
   const [allTiles, setAllTiles] = useState<TileWithDist[]>();
   const [start, setStart] = useState("");
   const [isNine, setIsNine] = useState(false);
-
-  useEffect(() => {
-    console.log({ allTiles });
-  }, [allTiles]);
 
   const filtered = useMemo(() => {
     const filterFn: (value: TileWithDist) => boolean = isNine

@@ -13,16 +13,11 @@ import { Find15 } from "./components/find-15";
 import { GlobalStyles } from "./variables/global-styles";
 import styled from "@emotion/styled";
 import { SettingsIcon } from "./icons/settings-icon";
+import { findVilliagesInfo } from "./utils/findVilliagesInfo";
 
-export const currentVillageId = Number(
-  document.querySelector(".villageInput")?.getAttribute("data-did")
-);
-export const villiages = new Set();
-document
-  .querySelectorAll("span[data-did]")
-  .forEach((v) => villiages.add(Number(v.getAttribute("data-did"))));
+export const { currentVillageId, villiages: userVilliages } = findVilliagesInfo();
 
-console.log("Travian bot started!", { currentVillageId, villiages });
+console.log("Travian bot started!", { currentVillageId, userVilliages });
 
 const portal = createPortal("travianBot");
 const root = createRoot(portal);

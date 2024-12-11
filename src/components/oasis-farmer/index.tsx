@@ -10,12 +10,17 @@ import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
 import { Flex } from "../../ui/flex";
 import { Layout } from "../../ui/layout";
+import { currentVillageId, userVilliages } from "../..";
 
 type OasisTile = Tile & { distance: number };
 
 export const OasisFarmer: FC = () => {
+  const currentVilliage = userVilliages.get(currentVillageId);
   const [tiles, setTiles] = useState<OasisTile[]>([]);
-  const [position, setPosition] = useState<TilePosition>({ x: 0, y: 0 });
+  const [position, setPosition] = useState<TilePosition>({
+    x: Number(currentVilliage?.x),
+    y: Number(currentVilliage?.y),
+  });
   const [isLoading, setIsLoading] = useState(false);
   const [checkedFarm, setCheckedFarm] = useState<string[]>([]);
   const troopFormRef = useRef<HTMLFormElement>(null);
@@ -94,17 +99,20 @@ export const OasisFarmer: FC = () => {
       .map((t) => {
         return {
           ...t,
-          distance: getDistance(t.position.x, position.x, t.position.y, position.y),
+          distance: getDistance(
+            t.position.x,
+            Number(currentVilliage?.x),
+            t.position.y,
+            Number(currentVilliage?.y)
+          ),
         };
       })
       .sort((a, b) => a.distance - b.distance);
 
     setTiles(oaz);
     setIsLoading(false);
-    console.log(oaz);
   };
 
-  console.log({ checkedFarm });
   return (
     <Layout
       title={<Typography size="large">{chrome.i18n.getMessage("searchOfOasisTitle")}</Typography>}

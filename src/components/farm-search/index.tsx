@@ -6,7 +6,7 @@ import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
-import { villiages as userVilliages } from "../../index";
+import { currentVillageId, userVilliages } from "../../index";
 import { Layout } from "../../ui/layout";
 import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
@@ -14,7 +14,8 @@ import styled from "@emotion/styled";
 type VilliageTile = Tile & { distance: number; population?: string; alliance?: string };
 
 export const FarmSearch: FC = () => {
-  const [position, setPosition] = useState("");
+  const currentVilliage = userVilliages.get(currentVillageId);
+  const [position, setPosition] = useState(`${currentVilliage?.x}|${currentVilliage?.y}`);
   const [isLoading, setIsLoading] = useState(false);
   const [villiages, setVilliages] = useState<VilliageTile[]>();
   const { farms, add, remove } = useFarmList();
@@ -22,16 +23,20 @@ export const FarmSearch: FC = () => {
   const searchHandler = async () => {
     setIsLoading(true);
     const { x, y } = getPosition(position);
-    console.log("serach: ", { x, y });
 
     const tiles = await apiMapPosition({ x, y });
 
     const villiages = tiles
-      .filter((t) => t.title?.includes("{k.dt}") && !Array.from(userVilliages).includes(t.did))
+      .filter((t) => t.title?.includes("{k.dt}") && t.did && !userVilliages.has(t.did))
       .map((t) => {
         const population = t.text?.match(/{k.einwohner} \d*/)?.[0].split("} ")?.[1];
         const alliance = t.text?.match(/{k.allianz} \w*/)?.[0].split("} ")?.[1];
-        const distance = getDistance(x, t.position.x, y, t.position.y);
+        const distance = getDistance(
+          Number(currentVilliage?.x),
+          t.position.x,
+          Number(currentVilliage?.y),
+          t.position.y
+        );
         const title = t.title?.split("} ")?.[1];
         return { ...t, title, population, alliance, distance };
       })

@@ -93,9 +93,11 @@ export const Find15: FC = () => {
           {chrome.i18n.getMessage("search")}
         </Button>
 
-        <Typography>
-          {chrome.i18n.getMessage("progress")}: {progress}
-        </Typography>
+        {isLoading && (
+          <Typography>
+            {chrome.i18n.getMessage("progress")}: {progress}
+          </Typography>
+        )}
 
         <Table>
           {filtered?.map((tile) => {

@@ -17,18 +17,12 @@ type Farm = { x: string; y: string };
 const LAST_POSITION = "bot-last-farm-position";
 
 export const Farmlist: FC = () => {
-  const { farms, add, remove } = useFarmList();
+  const { farms, add, remove, lastPosition, setLastPosition } = useFarmList();
   const inputRef = useRef<HTMLInputElement>(null);
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sendingCount, setSendingCount] = useState(0);
-  const [lastPosition, setLastPosition] = useState(0);
   const [stopList, setStopList] = useState(new Set());
-
-  useEffect(() => {
-    const pos = Number(localStorage.getItem(LAST_POSITION));
-    setLastPosition(pos);
-  }, []);
 
   const sendFarmHandler = async () => {
     setIsLoading(true);
@@ -47,7 +41,6 @@ export const Farmlist: FC = () => {
       const html = await apiTileDetails({ x: parseFloat(x), y: parseFloat(y) });
       const find = html.match(/targetMapId=\d*/);
       if (find) {
-        // const [, mapId] = find[0].split("=");
         if (isFailedLastAttack(html)) {
           console.log("Last attack was failed! ", v);
           missedAttacks.add(v);
@@ -108,11 +101,8 @@ export const Farmlist: FC = () => {
 
             setLastPosition(i);
             setSendingCount(count);
-            const sleepRes = await sleep(300);
-            console.log({ sleepRes, count });
           } catch (e) {
             console.log("send farm error!");
-            localStorage.setItem(LAST_POSITION, i.toString());
             setLastPosition(i);
             setIsLoading(false);
             break;
@@ -125,7 +115,6 @@ export const Farmlist: FC = () => {
       }
 
       if (i === farmsArray.length - 1) {
-        localStorage.setItem(LAST_POSITION, "0");
         setLastPosition(0);
       }
     }
@@ -160,7 +149,6 @@ export const Farmlist: FC = () => {
             disabled={isLoading}
             onClick={() => {
               setLastPosition(0);
-              localStorage.setItem(LAST_POSITION, "0");
             }}
           >
             {chrome.i18n.getMessage("reset")}
@@ -212,7 +200,6 @@ export const Farmlist: FC = () => {
                       const isRemoved = remove(id);
                       if (isRemoved && lastPosition > removedIndex) {
                         setLastPosition(lastPosition - 1);
-                        localStorage.setItem(LAST_POSITION, (lastPosition - 1).toString());
                       }
                     }}
                   >

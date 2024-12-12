@@ -8,6 +8,7 @@ import { Tile } from "../../types";
 import { getDistance } from "../../utils";
 import { Button } from "../../ui/button";
 import { Layout } from "../../ui/layout";
+import { Table } from "../../ui/table";
 
 const FARM_15 = "{k.vt} {k.f6}";
 const FARM_9 = "{k.vt} {k.f1}";
@@ -95,17 +96,34 @@ export const Find15: FC = () => {
           </Typography>
         )}
 
-        <Table>
-          {filtered?.map((tile) => {
-            const { x, y } = tile.position;
-            return (
-              <Crop isNine={tile.title === FARM_9}>
-                <Typography>{tile.distance}</Typography>
-                <a href={`/karte.php?x=${x}&y=${y}`}>{`(${x}|${y})`}</a>
-              </Crop>
-            );
-          })}
-        </Table>
+        {!!filtered?.length && (
+          <Flex flexDirection="column" gap={8}>
+            <Typography>
+              {chrome.i18n.getMessage("found")}: {filtered.length}
+            </Typography>
+
+            <TableWrapper>
+              <Table<TileWithDist>
+                columns={[
+                  { label: "Dist", renderCell: ({ distance }) => <>{distance}</> },
+                  {
+                    label: "Type",
+                    renderCell: ({ title }) => <>{title === FARM_9 ? "9" : "15"}</>,
+                  },
+                  {
+                    label: "X|Y",
+                    renderCell: ({ position }) => (
+                      <a
+                        href={`/karte.php?x=${position.x}&y=${position.y}`}
+                      >{`(${position.x}|${position.y})`}</a>
+                    ),
+                  },
+                ]}
+                data={filtered}
+              />
+            </TableWrapper>
+          </Flex>
+        )}
       </Flex>
     </Layout>
   );
@@ -113,13 +131,11 @@ export const Find15: FC = () => {
 
 //////////// Styles
 
-const Table = styled.div`
-  display: grid;
-  max-width: 400px;
-  max-height: 500px;
+const TableWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
   overflow: auto;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 8px;
 `;
 
 const TextInput = styled.input`

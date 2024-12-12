@@ -37,16 +37,16 @@ test("Get all map positions", () => {
 
 describe("Normalization of value", () => {
   it("normalize not required", () => {
-    expect(normilizeDistance(1, 8, 21)).toEqual(7);
+    expect(normilizeDistance(1, 8, 43)).toEqual(7);
   });
   it("normalize with negative values not required", () => {
-    expect(normilizeDistance(-15, -10, 21)).toEqual(5);
+    expect(normilizeDistance(-15, -10, 43)).toEqual(5);
   });
   it("value must be dormalize", () => {
-    expect(normilizeDistance(16, -20, 21)).toEqual(7);
+    expect(normilizeDistance(16, -20, 43)).toEqual(7);
   });
   it("normilize bordreline case", () => {
-    expect(normilizeDistance(-11, 11, 21)).toEqual(21);
-    expect(normilizeDistance(-10, 11, 21)).toEqual(21);
+    expect(normilizeDistance(-11, 11, 43)).toEqual(21);
+    expect(normilizeDistance(-10, 11, 43)).toEqual(21);
   });
 });

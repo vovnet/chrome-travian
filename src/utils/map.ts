@@ -27,7 +27,7 @@ export const getAllPositions = ({ size, step }: GetPositions): TilePosition[] | 
   return result;
 };
 
-export const normilizeDistance = (x: number, y: number, size: number) => {
+export const normalizeDistance = (x: number, y: number, size: number) => {
   const width = (size - 1) / 2;
   if (Math.abs(x - y) <= width) {
     return Math.abs(x - y);

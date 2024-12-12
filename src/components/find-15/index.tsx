@@ -9,6 +9,7 @@ import { getDistance } from "../../utils";
 import { Button } from "../../ui/button";
 import { Layout } from "../../ui/layout";
 import { Table } from "../../ui/table";
+import { getOasesResources } from "../../client/parser";
 
 const FARM_15 = "{k.vt} {k.f6}";
 const FARM_9 = "{k.vt} {k.f1}";
@@ -44,6 +45,8 @@ export const Find15: FC = () => {
       })
       .sort((a, b) => a.distance - b.distance);
   }, [allTiles, start, isNine]);
+
+  const oases = useMemo(() => allTiles?.filter((t) => t.title === "{k.fo}"), [allTiles]);
 
   return (
     <Layout
@@ -117,6 +120,37 @@ export const Find15: FC = () => {
                         href={`/karte.php?x=${position.x}&y=${position.y}`}
                       >{`(${position.x}|${position.y})`}</a>
                     ),
+                  },
+                  {
+                    label: "Oases",
+                    renderCell: ({ position }) => {
+                      return (
+                        <>
+                          {oases
+                            ?.filter(
+                              (oas) =>
+                                getDistance(
+                                  oas.position.x,
+                                  position.x,
+                                  oas.position.y,
+                                  position.y
+                                ) <= 4
+                            )
+                            .map((oas) => {
+                              return (
+                                <Flex alignItems="center">
+                                  {getOasesResources(oas.text || "")?.map((r) => (
+                                    <>
+                                      <i className={r?.className} />
+                                      {r?.value}%
+                                    </>
+                                  ))}
+                                </Flex>
+                              );
+                            })}
+                        </>
+                      );
+                    },
                   },
                 ]}
                 data={filtered}

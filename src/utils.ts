@@ -1,6 +1,8 @@
+import { normilizeDistance } from "./utils/map";
+
 export const getDistance = (x1: number, x2: number, y1: number, y2: number) => {
-  const x = x2 - x1;
-  const y = y2 - y1;
+  const x = normilizeDistance(x1, x2, 200);
+  const y = normilizeDistance(y1, y2, 200);
   return Number(Math.sqrt(Math.pow(x, 2) + Math.pow(y, 2)).toFixed(1));
 };
 

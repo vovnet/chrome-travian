@@ -1,4 +1,4 @@
-import { getPositionFromRow, getAllPositions } from "./map";
+import { getPositionFromRow, getAllPositions, normilizeDistance } from "./map";
 
 test("Get X positions from row", () => {
   expect(getPositionFromRow({ size: 11, step: 3 })).toEqual([-4, -1, 2, 5]);
@@ -33,4 +33,20 @@ test("Get all map positions", () => {
     { x: 2, y: -5 },
     { x: 5, y: -5 },
   ]);
+});
+
+describe("Normalization of value", () => {
+  it("normalize not required", () => {
+    expect(normilizeDistance(1, 8, 21)).toEqual(7);
+  });
+  it("normalize with negative values not required", () => {
+    expect(normilizeDistance(-15, -10, 21)).toEqual(5);
+  });
+  it("value must be dormalize", () => {
+    expect(normilizeDistance(16, -20, 21)).toEqual(7);
+  });
+  it("normilize bordreline case", () => {
+    expect(normilizeDistance(-11, 11, 21)).toEqual(21);
+    expect(normilizeDistance(-10, 11, 21)).toEqual(21);
+  });
 });

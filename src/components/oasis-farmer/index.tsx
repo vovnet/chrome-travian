@@ -11,6 +11,7 @@ import styled from "@emotion/styled";
 import { Flex } from "../../ui/flex";
 import { Layout } from "../../ui/layout";
 import { currentVillageId, userVilliages } from "../..";
+import { getOasesResources } from "../../client/parser";
 
 type OasisTile = Tile & { distance: number };
 
@@ -184,8 +185,16 @@ export const OasisFarmer: FC = () => {
                 {
                   label: "Type",
                   renderCell: (item) => {
-                    const make = item.text?.match(/\d+%/g)?.join(" ");
-                    return <>{make}</>;
+                    return (
+                      <Flex alignItems="center">
+                        {getOasesResources(item.text || "")?.map((r) => (
+                          <>
+                            <i className={r?.className} />
+                            {r?.value}%
+                          </>
+                        ))}
+                      </Flex>
+                    );
                   },
                 },
                 {

@@ -1,5 +1,5 @@
 import { createPortal } from "./tools";
-import { FC, useState } from "react";
+import { FC, useEffect, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
 import { OasisFarmer } from "./components/oasis-farmer";
@@ -24,11 +24,22 @@ const root = createRoot(portal);
 
 export const CURRENT_NATION = 0;
 export const STORAGE_NAME = "bot-farm-list";
+export const LAST_TAB = "bot-last-opened-tab";
 
 type Page = "oasis" | "farm" | "searchFarm" | "15" | "settings";
 
 const App: FC = () => {
-  const [page, setPage] = useState<Page>("oasis");
+  const [page, setPage] = useState<Page>("settings");
+
+  useLayoutEffect(() => {
+    const lastTab = (localStorage.getItem(LAST_TAB) as Page) || "settings";
+    setPage(lastTab);
+  }, []);
+
+  const changeTabHandler = (tab: string) => {
+    setPage(tab as Page);
+    localStorage.setItem(LAST_TAB, tab);
+  };
 
   return (
     <>
@@ -50,7 +61,7 @@ const App: FC = () => {
             },
           ]}
           selected={page}
-          onChange={setPage}
+          onChange={changeTabHandler}
         />
         {page === "oasis" && <OasisFarmer />}
         {page === "farm" && <Farmlist />}

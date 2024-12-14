@@ -13,6 +13,16 @@
     {
       "matches": ["https://*.travian.com/karte.php*"],
       "js": ["dist/main.js"]
+    },
+    {
+      "matches": ["https://*.travian.com/*"],
+      "js": ["dist/inject.js"]
+    }
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["dist/searchPlayers.js"],
+      "matches": ["https://*.travian.com/*"]
     }
   ]
 }

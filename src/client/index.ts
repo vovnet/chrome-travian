@@ -27,3 +27,8 @@ export const apiTileDetails = async ({ x, y }: TilePosition) => {
   const { html } = (await data.json()) as { html: string };
   return html;
 };
+
+export const apiProfile = async (uid: number) => {
+  const data = await fetch(`/profile/${uid}`, { method: "GET" });
+  return await data.text();
+};

@@ -4,6 +4,7 @@ export type Tile = {
   position: TilePosition;
   title?: string;
   text?: string;
+  aid?: number;
   did?: number;
   uid?: number;
 };

@@ -1,9 +1,13 @@
 const path = require("path");
 
 module.exports = {
-  entry: "./src/index.tsx",
+  entry: {
+    main: "./src/index.tsx",
+    inject: "./src/utils/inject.ts",
+    searchPlayers: "./src/utils/searchPlayers.ts",
+  },
   output: {
-    filename: "main.js",
+    filename: "[name].js",
     path: path.resolve(__dirname, "dist"),
   },
   module: {

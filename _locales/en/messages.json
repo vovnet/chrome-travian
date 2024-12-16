@@ -94,5 +94,8 @@
   },
   "found": {
     "message": "Found"
+  },
+  "waves": {
+    "message": "Waves"
   }
 }

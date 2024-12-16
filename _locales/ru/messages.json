@@ -94,5 +94,8 @@
   },
   "found": {
     "message": "Найдено"
+  },
+  "waves": {
+    "message": "Волны"
   }
 }

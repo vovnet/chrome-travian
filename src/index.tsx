@@ -14,6 +14,7 @@ import { GlobalStyles } from "./variables/global-styles";
 import styled from "@emotion/styled";
 import { SettingsIcon } from "./icons/settings-icon";
 import { findVilliagesInfo } from "./utils/findVilliagesInfo";
+import { Waves } from "./components/waves";
 
 export const { currentVillageId, villiages: userVilliages } = findVilliagesInfo();
 
@@ -26,7 +27,7 @@ export const CURRENT_NATION = 0;
 export const STORAGE_NAME = "bot-farm-list";
 export const LAST_TAB = "bot-last-opened-tab";
 
-type Page = "oasis" | "farm" | "searchFarm" | "15" | "settings";
+type Page = "oasis" | "farm" | "searchFarm" | "15" | "settings" | "waves";
 
 const App: FC = () => {
   const [page, setPage] = useState<Page>("settings");
@@ -50,6 +51,7 @@ const App: FC = () => {
             { id: "oasis", title: chrome.i18n.getMessage("oases") },
             { id: "farm", title: chrome.i18n.getMessage("farmlist") },
             { id: "searchFarm", title: chrome.i18n.getMessage("farmSearch") },
+            { id: "waves", title: chrome.i18n.getMessage("waves") },
             { id: "15", title: chrome.i18n.getMessage("crop") },
             {
               id: "settings",
@@ -68,6 +70,7 @@ const App: FC = () => {
         {page === "searchFarm" && <FarmSearch />}
         {page === "settings" && <Settings />}
         {page === "15" && <Find15 />}
+        {page === "waves" && <Waves />}
       </AppContainer>
     </>
   );

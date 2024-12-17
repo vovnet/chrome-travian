@@ -163,7 +163,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][1].name}`}
             />
-            <TroopInput type="text" className="text" name="troop[t1]" />
+            <TroopInput
+              type="text"
+              className="text"
+              name="troop[t1]"
+              placeholder={UNITS[CURRENT_NATION][1].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -171,7 +176,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][2].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t2]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t2]"
+              placeholder={UNITS[CURRENT_NATION][2].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -179,7 +189,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][3].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t3]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t3]"
+              placeholder={UNITS[CURRENT_NATION][3].name}
+            />
           </TroopItem>
         </TroopBlock>
 
@@ -190,7 +205,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][4].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t4]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t4]"
+              placeholder={UNITS[CURRENT_NATION][4].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -198,7 +218,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][5].name}`}
             />
-            <TroopInput type="text" className="text" name="troop[t5]" />
+            <TroopInput
+              type="text"
+              className="text"
+              name="troop[t5]"
+              placeholder={UNITS[CURRENT_NATION][5].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -206,7 +231,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][6].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t6]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t6]"
+              placeholder={UNITS[CURRENT_NATION][6].name}
+            />
           </TroopItem>
         </TroopBlock>
 
@@ -217,7 +247,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][7].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t7]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t7]"
+              placeholder={UNITS[CURRENT_NATION][7].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -225,7 +260,12 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][8].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t8]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t8]"
+              placeholder={UNITS[CURRENT_NATION][8].name}
+            />
           </TroopItem>
           <TroopItem>
             <img
@@ -233,14 +273,19 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
               src="/img/x.gif"
               alt={`${UNITS[CURRENT_NATION][9].name}`}
             />
-            <TroopInput type="text" className="text " name="troop[t9]" />
+            <TroopInput
+              type="text"
+              className="text "
+              name="troop[t9]"
+              placeholder={UNITS[CURRENT_NATION][9].name}
+            />
           </TroopItem>
         </TroopBlock>
 
         <TroopBlock>
           <TroopItem>
             <img className={`unit uhero`} src="/img/x.gif" alt="hero" />
-            <TroopInput type="text" className="text " name="troop[t11]" />
+            <TroopInput type="text" className="text " name="troop[t11]" placeholder="Hero" />
           </TroopItem>
           <select name="troops[0][catapultTarget1]">
             <option value="99" selected>
@@ -304,7 +349,7 @@ const TroopItem = styled.div`
 `;
 
 const TroopInput = styled.input`
-  width: 48px;
+  width: 64px;
 `;
 
 const TroopBlock = styled.div`

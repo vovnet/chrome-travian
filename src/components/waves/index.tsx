@@ -54,6 +54,7 @@ export const Waves: FC = () => {
       const t10 = formData.get("troop[t10]") as string;
       const t11 = formData.get("troop[t11]") as string;
       const catTarget1 = formData.get("troops[0][catapultTarget1]") as string;
+      const catTarget2 = formData.get("troops[0][catapultTarget2]") as string;
 
       const sendFormData = new FormData();
       sendFormData.append("checksum", checksum?.toString() || "");
@@ -74,6 +75,7 @@ export const Waves: FC = () => {
       sendFormData.append("troops[0][t10]", t10);
       sendFormData.append("troops[0][t11]", t11);
       sendFormData.append("troops[0][catapultTarget1]", catTarget1);
+      sendFormData.append("troops[0][catapultTarget2]", catTarget2);
       forms[i] = sendFormData;
     }
 
@@ -287,47 +289,94 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
             <img className={`unit uhero`} src="/img/x.gif" alt="hero" />
             <TroopInput type="text" className="text " name="troop[t11]" placeholder="Hero" />
           </TroopItem>
-          <select name="troops[0][catapultTarget1]">
-            <option value="99" selected>
-              Случайная цель
-            </option>
-            <optgroup label="Сырье">
-              <option value="1">Лесопилка</option>
-              <option value="2">Глиняный карьер</option>
-              <option value="3">Железный рудник</option>
-              <option value="4">Ферма</option>
-              <option value="5">Лесопильный завод</option>
-              <option value="6">Кирпичный завод</option>
-              <option value="7">Чугунолитейный завод</option>
-              <option value="8">Мукомольная мельница</option>
-              <option value="9">Пекарня</option>
-            </optgroup>
-            <optgroup label="Инфраструктура">
-              <option value="10">Склад</option>
-              <option value="11">Амбар</option>
-              <option value="15">Главное здание</option>
-              <option value="17">Рынок</option>
-              <option value="18">Посольство</option>
-              <option value="24">Ратуша</option>
-              <option value="25">Резиденция</option>
-              <option value="26">Дворец</option>
-              <option value="27">Сокровищница</option>
-              <option value="28">Торговая палата</option>
-            </optgroup>
-            <optgroup label="Армия">
-              <option value="13">Кузница</option>
-              <option value="14">Арена</option>
-              <option value="16">Пункт сбора</option>
-              <option value="19">Казарма</option>
-              <option value="20">Конюшня</option>
-              <option value="21">Мастерская</option>
-              <option value="22">Академия</option>
-              <option value="35">Пивоварня</option>
-              <option value="37">Таверна</option>
-              <option value="41">Водопой</option>
-              <option value="46">Госпиталь</option>
-            </optgroup>
-          </select>
+          <TroopItem>
+            <label>1</label>
+            <select name="troops[0][catapultTarget1]">
+              <option value="99" selected>
+                Случайная цель
+              </option>
+              <optgroup label="Сырье">
+                <option value="1">Лесопилка</option>
+                <option value="2">Глиняный карьер</option>
+                <option value="3">Железный рудник</option>
+                <option value="4">Ферма</option>
+                <option value="5">Лесопильный завод</option>
+                <option value="6">Кирпичный завод</option>
+                <option value="7">Чугунолитейный завод</option>
+                <option value="8">Мукомольная мельница</option>
+                <option value="9">Пекарня</option>
+              </optgroup>
+              <optgroup label="Инфраструктура">
+                <option value="10">Склад</option>
+                <option value="11">Амбар</option>
+                <option value="15">Главное здание</option>
+                <option value="17">Рынок</option>
+                <option value="18">Посольство</option>
+                <option value="24">Ратуша</option>
+                <option value="25">Резиденция</option>
+                <option value="26">Дворец</option>
+                <option value="27">Сокровищница</option>
+                <option value="28">Торговая палата</option>
+              </optgroup>
+              <optgroup label="Армия">
+                <option value="13">Кузница</option>
+                <option value="14">Арена</option>
+                <option value="16">Пункт сбора</option>
+                <option value="19">Казарма</option>
+                <option value="20">Конюшня</option>
+                <option value="21">Мастерская</option>
+                <option value="22">Академия</option>
+                <option value="35">Пивоварня</option>
+                <option value="37">Таверна</option>
+                <option value="41">Водопой</option>
+                <option value="46">Госпиталь</option>
+              </optgroup>
+            </select>
+          </TroopItem>
+          <TroopItem>
+            <label>2</label>
+            <select name="troops[0][catapultTarget2]">
+              <option value="99" selected>
+                Случайная цель
+              </option>
+              <optgroup label="Сырье">
+                <option value="1">Лесопилка</option>
+                <option value="2">Глиняный карьер</option>
+                <option value="3">Железный рудник</option>
+                <option value="4">Ферма</option>
+                <option value="5">Лесопильный завод</option>
+                <option value="6">Кирпичный завод</option>
+                <option value="7">Чугунолитейный завод</option>
+                <option value="8">Мукомольная мельница</option>
+                <option value="9">Пекарня</option>
+              </optgroup>
+              <optgroup label="Инфраструктура">
+                <option value="10">Склад</option>
+                <option value="11">Амбар</option>
+                <option value="15">Главное здание</option>
+                <option value="17">Рынок</option>
+                <option value="18">Посольство</option>
+                <option value="24">Ратуша</option>
+                <option value="25">Резиденция</option>
+                <option value="26">Дворец</option>
+                <option value="27">Сокровищница</option>
+                <option value="28">Торговая палата</option>
+              </optgroup>
+              <optgroup label="Армия">
+                <option value="13">Кузница</option>
+                <option value="14">Арена</option>
+                <option value="16">Пункт сбора</option>
+                <option value="19">Казарма</option>
+                <option value="20">Конюшня</option>
+                <option value="21">Мастерская</option>
+                <option value="22">Академия</option>
+                <option value="35">Пивоварня</option>
+                <option value="37">Таверна</option>
+                <option value="41">Водопой</option>
+                <option value="46">Госпиталь</option>
+              </optgroup>
+            </select>
+          </TroopItem>
         </TroopBlock>
       </TroopsContainer>
     </form>

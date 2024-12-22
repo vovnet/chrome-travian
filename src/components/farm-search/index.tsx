@@ -1,4 +1,4 @@
-import React, { FC, useState } from "react";
+import React, { FC, useMemo, useState } from "react";
 import { Flex } from "../../ui/flex";
 import { Tile, TilePosition } from "../../types";
 import { getDistance } from "../../utils";
@@ -19,6 +19,22 @@ export const FarmSearch: FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [villiages, setVilliages] = useState<VilliageTile[]>();
   const { farms, add, remove } = useFarmList();
+  const [withoutAlly, setWithoutAlly] = useState(false);
+  const [onlyUnchecked, setOnlyUnchecked] = useState(false);
+  const filtered = useMemo(() => {
+    let result = villiages;
+    if (withoutAlly) {
+      result = result?.filter((v) => !v.alliance);
+    }
+    if (onlyUnchecked) {
+      result = result?.filter((v) => {
+        const vPos = `${v.position.x}|${v.position.y}`;
+        const isChecked = farms.has(vPos);
+        return !isChecked;
+      });
+    }
+    return result;
+  }, [villiages, withoutAlly, onlyUnchecked]);
 
   const searchHandler = async () => {
     setIsLoading(true);
@@ -52,18 +68,41 @@ export const FarmSearch: FC = () => {
         <Typography size="large">{chrome.i18n.getMessage("searchOfOasisVilliages")}</Typography>
       }
     >
-      <Flex gap={8} alignItems="center">
-        <label>x|y:</label>
-        <TextInput
-          type="text"
-          className="text"
-          value={position}
-          disabled={isLoading}
-          onChange={(e) => setPosition(e.target.value)}
-        />
-        <Button disabled={isLoading} onClick={searchHandler}>
-          Поиск
-        </Button>
+      <Flex flexDirection="column" gap={12} alignItems="center">
+        <Flex gap={8} alignItems="center">
+          <label>x|y:</label>
+          <TextInput
+            type="text"
+            className="text"
+            value={position}
+            disabled={isLoading}
+            onChange={(e) => setPosition(e.target.value)}
+          />
+          <Button disabled={isLoading} onClick={searchHandler}>
+            Поиск
+          </Button>
+        </Flex>
+
+        <Flex gap={12}>
+          <Flex gap={8}>
+            <label htmlFor="ally">Без альянса</label>
+            <input
+              name="ally"
+              id="ally"
+              type="checkbox"
+              onChange={(e) => setWithoutAlly(e.target.checked)}
+            />
+          </Flex>
+          <Flex gap={8}>
+            <label htmlFor="unchecked">Не выбранные</label>
+            <input
+              name="unchecked"
+              id="unchecked"
+              type="checkbox"
+              onChange={(e) => setOnlyUnchecked(e.target.checked)}
+            />
+          </Flex>
+        </Flex>
       </Flex>
 
       {!!villiages?.length && (
@@ -118,7 +157,7 @@ export const FarmSearch: FC = () => {
                 },
               },
             ]}
-            data={villiages}
+            data={filtered}
           />
         </TableWrapper>
       )}

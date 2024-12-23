@@ -5,6 +5,7 @@ module.exports = {
     main: "./src/index.tsx",
     inject: "./src/utils/inject.ts",
     searchPlayers: "./src/utils/searchPlayers.ts",
+    playerLocation: "./src/utils/playerLocation.ts",
   },
   output: {
     filename: "[name].js",

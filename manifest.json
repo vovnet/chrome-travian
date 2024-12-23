@@ -17,6 +17,10 @@
     {
       "matches": ["https://*.travian.com/*"],
       "js": ["dist/inject.js"]
+    },
+    {
+      "matches": ["https://*.travian.com/profile/*"],
+      "js": ["dist/playerLocation.js"]
     }
   ],
   "web_accessible_resources": [

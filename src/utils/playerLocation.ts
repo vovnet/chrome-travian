@@ -13,21 +13,9 @@ userFlag.className = "languageFlag";
 userFlag.src = `../../../../img/svg/flags/${flag}.svg`;
 userFlag.title = profile?.countryEnglish || "";
 
-const delay = () => {
-  setTimeout(() => {
-    const img = document.querySelector("img.languageFlag");
-    img?.before(userFlag);
+const title = document.querySelector(".titleInHeader") as HTMLDivElement;
+title.style.display = "flex";
+title.style.gap = "8px";
+title?.appendChild(userFlag);
 
-    console.log("player location: ", { language, flag, img, userFlag, profile });
-  }, 200);
-};
-
-if (document.readyState == "complete") {
-  delay();
-} else {
-  document.onreadystatechange = function () {
-    if (document.readyState === "complete") {
-      delay();
-    }
-  };
-}
+console.log("player location: ", { language, flag, userFlag, profile });

@@ -6,15 +6,16 @@ import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { apiMapPosition } from "../../client";
 import { Button } from "../../ui/button";
-import { currentVillageId, userVilliages } from "../../index";
+import { userVilliages } from "../../index";
 import { Layout } from "../../ui/layout";
 import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
+import { useCurrentVillage } from "../../hooks/use-current-village";
 
 type VilliageTile = Tile & { distance: number; population?: string; alliance?: string };
 
 export const FarmSearch: FC = () => {
-  const currentVilliage = userVilliages.get(currentVillageId);
+  const currentVilliage = useCurrentVillage();
   const [position, setPosition] = useState(`${currentVilliage?.x}|${currentVilliage?.y}`);
   const [isLoading, setIsLoading] = useState(false);
   const [villiages, setVilliages] = useState<VilliageTile[]>();

@@ -24,6 +24,12 @@ export const useFarmList = () => {
     localStorage.setItem(NAME, JSON.stringify({ lastPosition, list: Array.from(farms) }));
   };
 
+  const set = (values: Set<string>) => {
+    setFarms(values);
+    setLastPosition(0);
+    saveFarms(0, values);
+  };
+
   const add = (value: string) => {
     if (farms.has(value)) {
       return false;
@@ -51,6 +57,7 @@ export const useFarmList = () => {
     setFarms,
     saveFarms,
     add,
+    set,
     remove,
     lastPosition,
     setLastPosition: (last: number) => {

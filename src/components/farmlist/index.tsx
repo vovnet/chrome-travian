@@ -1,7 +1,7 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { Flex } from "../../ui/flex";
 import { TroopForm } from "../troop-form";
-import { sleep } from "../../utils";
+import { getDistance, sleep } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { Button } from "../../ui/button";
@@ -11,18 +11,33 @@ import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
 import { CloseIcon } from "../../icons/close-icon";
 import { Layout } from "../../ui/layout";
+import { useCurrentVillage } from "../../hooks/use-current-village";
 
 type Farm = { x: string; y: string };
 
 const LAST_POSITION = "bot-last-farm-position";
 
 export const Farmlist: FC = () => {
-  const { farms, add, remove, lastPosition, setLastPosition } = useFarmList();
+  const { farms, add, remove, set: setFarms, lastPosition, setLastPosition } = useFarmList();
   const inputRef = useRef<HTMLInputElement>(null);
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sendingCount, setSendingCount] = useState(0);
   const [stopList, setStopList] = useState(new Set());
+  const currentVillage = useCurrentVillage();
+
+  const mappedFarms = useMemo(() => {
+    return Array.from(farms).map((v, index) => {
+      const [x, y] = v.split("|");
+      const distance = getDistance(
+        Number(x),
+        Number(currentVillage?.x),
+        Number(y),
+        Number(currentVillage?.y)
+      );
+      return { id: v, x, y, index, distance };
+    });
+  }, [farms, currentVillage]);
 
   const sendFarmHandler = async () => {
     setIsLoading(true);
@@ -146,6 +161,18 @@ export const Farmlist: FC = () => {
           </Button>
 
           <Button
+            disabled={!farms.size || isLoading}
+            onClick={() => {
+              const sorted = mappedFarms
+                .sort((a, b) => a.distance - b.distance)
+                .map((v) => `${v.x}|${v.y}`);
+              setFarms(new Set(sorted));
+            }}
+          >
+            Sort
+          </Button>
+
+          <Button
             disabled={isLoading}
             onClick={() => {
               setLastPosition(0);
@@ -172,7 +199,7 @@ export const Farmlist: FC = () => {
         )}
 
         <TableContainer>
-          <Table<{ id: string; x: string; y: string; index: number }>
+          <Table<{ id: string; x: string; y: string; index: number; distance: number }>
             columns={[
               {
                 label: "🔪",
@@ -181,6 +208,10 @@ export const Farmlist: FC = () => {
                 ),
               },
               { label: "#", renderCell: ({ index }) => <>{index + 1}</> },
+              {
+                label: "Dist",
+                renderCell: ({ distance }) => <>{distance}</>,
+              },
               {
                 label: "Pos",
                 renderCell: ({ id, x, y, index }) => (
@@ -208,10 +239,7 @@ export const Farmlist: FC = () => {
                 ),
               },
             ]}
-            data={Array.from(farms).map((v, index) => {
-              const [x, y] = v.split("|");
-              return { id: v, x, y, index };
-            })}
+            data={mappedFarms}
           />
         </TableContainer>
       </Flex>

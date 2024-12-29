@@ -3,7 +3,7 @@ import React, { FC } from "react";
 import { tokens } from "../../variables/tokens";
 
 type TableProps<T> = {
-  columns?: { label: string; renderCell: (item: T) => React.ReactElement }[];
+  columns?: { label: string | React.ReactElement; renderCell: (item: T) => React.ReactElement }[];
   data?: T[];
 };
 
@@ -12,7 +12,7 @@ export function Table<T>({ columns, data }: TableProps<T>) {
     <StyledTable>
       <StyledRow>
         {columns?.map((column) => (
-          <StyledHead key={column.label}>{column.label}</StyledHead>
+          <StyledHead>{column.label}</StyledHead>
         ))}
       </StyledRow>
       {data?.map((d, i) => (

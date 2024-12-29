@@ -13,7 +13,7 @@ import { Layout } from "../../ui/layout";
 import { currentVillageId, userVilliages } from "../..";
 import { getOasesResources } from "../../client/parser";
 
-type OasisTile = Tile & { distance: number };
+type OasisTile = Tile & { distance: number; animals?: RegExpMatchArray | null };
 
 export const OasisFarmer: FC = () => {
   const currentVilliage = userVilliages.get(currentVillageId);
@@ -106,6 +106,7 @@ export const OasisFarmer: FC = () => {
             t.position.y,
             Number(currentVilliage?.y)
           ),
+          animals: t.text?.match(/<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g),
         };
       })
       .sort((a, b) => a.distance - b.distance);
@@ -159,7 +160,21 @@ export const OasisFarmer: FC = () => {
             <Table<OasisTile>
               columns={[
                 {
-                  label: "Ch",
+                  label: (
+                    <input
+                      type="checkbox"
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          const ch = tiles
+                            .filter((t) => !t.animals)
+                            .map((t) => `${t.position.x}|${t.position.y}`);
+                          setCheckedFarm(ch);
+                        } else {
+                          setCheckedFarm([]);
+                        }
+                      }}
+                    />
+                  ),
                   renderCell: (item) => (
                     <input
                       type="checkbox"
@@ -207,11 +222,7 @@ export const OasisFarmer: FC = () => {
                 },
                 {
                   label: "Info",
-                  renderCell: (item) => {
-                    const lines = item.text?.split("<br>") as string[];
-                    const animals = item.text?.match(
-                      /<i class="unit u\d+"><\/i><span class="value ">\d+<\/span>/g
-                    );
+                  renderCell: ({ animals }) => {
                     return (
                       <Flex gap={8}>
                         {animals?.map((a) => (

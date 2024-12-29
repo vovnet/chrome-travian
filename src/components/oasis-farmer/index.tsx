@@ -26,6 +26,7 @@ export const OasisFarmer: FC = () => {
   const [checkedFarm, setCheckedFarm] = useState<string[]>([]);
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isSending, setIsSending] = useState(false);
+  const [sendCount, setSendCount] = useState(0);
 
   const sendFarm = async () => {
     for (let i = 0; i < checkedFarm.length; i++) {
@@ -77,6 +78,7 @@ export const OasisFarmer: FC = () => {
           sendFormData.append("troops[0][t6]", t6);
 
           await fetch("/build.php?gid=16&tt=2", { method: "POST", body: sendFormData });
+          setSendCount((prev) => prev + 1);
         }
       }
     }
@@ -148,7 +150,10 @@ export const OasisFarmer: FC = () => {
 
       {!!tiles.length && (
         <>
-          <span>{`Выбрано: ${checkedFarm.length} из ${tiles.length}`}</span>
+          <Flex gap={8}>
+            <div>{`Выбрано: ${checkedFarm.length} из ${tiles.length}`}</div>
+            <div>{`Отправлено: ${sendCount}/${checkedFarm.length}`}</div>
+          </Flex>
           <TroopForm ref={troopFormRef} />
           <Button
             disabled={isLoading || !checkedFarm.length || isSending}

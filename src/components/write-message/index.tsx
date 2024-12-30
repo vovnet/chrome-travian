@@ -12,10 +12,12 @@ export const WriteMessage: FC = () => {
   const [loading, setLoading] = useState(false);
   const [sended, setSended] = useState(0);
   const [page, setPage] = useState(1);
+  const [pages, setPages] = useState(0);
 
   useLayoutEffect(() => {
     const page = Number(localStorage.getItem(SPAM_LAST_PAGE) || 1);
     setPage(page);
+    getPages().then((val) => setPages(val));
   }, []);
 
   const send = async (players: string[], formData: FormData) => {
@@ -29,12 +31,17 @@ export const WriteMessage: FC = () => {
 
   return (
     <Layout title={<Typography size="large">Spam</Typography>}>
-      <div>Sended: {sended}</div>
+      <Flex gap={12}>
+        <div>Sended: {sended}</div>
+        <div>
+          Page: {page}/{pages}
+        </div>
+      </Flex>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
           const formData = new FormData(e.currentTarget);
-          const pages = await getPages();
+
           for (let i = page; i <= pages; i++) {
             const players = await getPlayers(i);
             await send(players, formData);

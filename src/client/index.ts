@@ -36,3 +36,7 @@ export const apiProfile = async (uid: number) => {
 export const apiWriteMessage = (form: FormData) => {
   return fetch("/messages/write", { method: "POST", body: form });
 };
+
+export const apiStatistics = (page = 1) => {
+  return fetch(`/statistics/player/overview?page=${page}`, { method: "GET" });
+};

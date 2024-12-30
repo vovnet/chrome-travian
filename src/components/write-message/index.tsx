@@ -1,71 +1,45 @@
-// POST
-// /messages/write
-// Form Data
-// an: Kingxays
-// be: привет
-// message: Как дела?
-
-import React, { FC, useState } from "react";
+import React, { FC, useLayoutEffect, useState } from "react";
 import { Layout } from "../../ui/layout";
 import { Typography } from "../../ui/text";
 import { Flex } from "../../ui/flex";
 import { Button } from "../../ui/button";
-import { apiMapPosition, apiWriteMessage } from "../../client";
-import { getAllPositions } from "../../utils/map";
-import { Tile } from "../../types";
+import { apiStatistics, apiWriteMessage } from "../../client";
+import { sleep } from "../../utils";
+
+const SPAM_LAST_PAGE = "spamLastPage";
 
 export const WriteMessage: FC = () => {
-  const [players, setPlayers] = useState<string[]>();
   const [loading, setLoading] = useState(false);
   const [sended, setSended] = useState(0);
+  const [page, setPage] = useState(1);
+
+  useLayoutEffect(() => {
+    const page = Number(localStorage.getItem(SPAM_LAST_PAGE) || 1);
+    setPage(page);
+  }, []);
+
+  const send = async (players: string[], formData: FormData) => {
+    for (let i = 0; i < players?.length; i++) {
+      formData.set("an", players[i]);
+      await apiWriteMessage(formData);
+      setSended((prev) => prev + 1);
+      await sleep(1000);
+    }
+  };
 
   return (
     <Layout title={<Typography size="large">Spam</Typography>}>
-      <div>Found: {players?.length}</div>
-      <Button
-        disabled={loading}
-        onClick={async () => {
-          setLoading(true);
-          const positions = getAllPositions({ size: 401, step: 31 });
-          if (!positions) {
-            setLoading(false);
-            return;
-          }
-          let tiles: Tile[] = [];
-          for (let i = 0; i < positions?.length; i++) {
-            const res = await apiMapPosition(positions[i]);
-            tiles = tiles.concat(res);
-          }
-
-          const filtered = tiles
-            .filter((t) => t.uid)
-            .map((t) => {
-              const matches = t.text?.match(/spieler} .*<br/g)?.[0];
-              const player = matches?.split(" ")?.[1].split("<br")?.[0];
-              return player;
-            })
-            .filter((p) => p !== "Natars");
-
-          const players = new Set(filtered);
-          setPlayers(Array.from(players));
-
-          setLoading(false);
-        }}
-      >
-        Find
-      </Button>
       <div>Sended: {sended}</div>
       <form
         onSubmit={async (e) => {
           e.preventDefault();
-          if (!players?.length) {
-            return;
-          }
           const formData = new FormData(e.currentTarget);
-          for (let i = 0; i < players?.length; i++) {
-            formData.set("an", players[i]);
-            await apiWriteMessage(formData);
-            setSended((prev) => prev + 1);
+          const pages = await getPages();
+          for (let i = page; i <= pages; i++) {
+            const players = await getPlayers(i);
+            await send(players, formData);
+            setPage(i);
+            localStorage.setItem(SPAM_LAST_PAGE, i.toString());
           }
         }}
       >
@@ -79,4 +53,30 @@ export const WriteMessage: FC = () => {
       </form>
     </Layout>
   );
+};
+
+const getPages = async () => {
+  const stat = await apiStatistics();
+  const parser = new DOMParser();
+  const text = await stat.text();
+  const doc = parser.parseFromString(text, "text/html");
+  const link = doc.querySelector(".last") as HTMLLinkElement;
+  const pages = Number(link.href.split("=")?.[1]);
+  return pages;
+};
+
+const getPlayers = async (page: number) => {
+  const pageStat = await apiStatistics(page);
+  const parser = new DOMParser();
+  const text = await pageStat.text();
+  const doc = parser.parseFromString(text, "text/html");
+  const players = doc.querySelectorAll(".pla");
+  const res: string[] = [];
+  players.forEach((p) => {
+    const a = p.querySelector("a")?.innerText;
+    if (a) {
+      res.push(a);
+    }
+  });
+  return res;
 };

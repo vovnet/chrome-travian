@@ -6,9 +6,10 @@ type ButtonProps = {
   children?: string | number | JSX.Element | ReactNode;
   disabled?: boolean;
   onClick?: () => void;
+  type?: string;
 };
 
-export const Button: FC<ButtonProps> = ({ children, disabled, onClick }) => {
+export const Button: FC<ButtonProps> = ({ type, children, disabled, onClick }) => {
   return (
     <MUIButton
       sx={{ backgroundColor: "#1f1f1f", color: tokens.colors.accent, fontSize: "0.6rem" }}
@@ -16,6 +17,7 @@ export const Button: FC<ButtonProps> = ({ children, disabled, onClick }) => {
       disableElevation
       disabled={disabled}
       onClick={onClick}
+      type={type}
     >
       {children}
     </MUIButton>

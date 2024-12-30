@@ -32,3 +32,7 @@ export const apiProfile = async (uid: number) => {
   const data = await fetch(`/profile/${uid}`, { method: "GET" });
   return await data.text();
 };
+
+export const apiWriteMessage = (form: FormData) => {
+  return fetch("/messages/write", { method: "POST", body: form });
+};

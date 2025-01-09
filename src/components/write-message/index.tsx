@@ -40,6 +40,7 @@ export const WriteMessage: FC = () => {
       <form
         onSubmit={async (e) => {
           e.preventDefault();
+          setLoading(true);
           const formData = new FormData(e.currentTarget);
 
           for (let i = page; i <= pages; i++) {
@@ -48,6 +49,7 @@ export const WriteMessage: FC = () => {
             setPage(i);
             localStorage.setItem(SPAM_LAST_PAGE, i.toString());
           }
+          setLoading(false);
         }}
       >
         <Flex flexDirection="column" gap={8}>

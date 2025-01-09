@@ -336,9 +336,8 @@ const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
           <TroopItem>
             <label>2</label>
             <select name="troops[0][catapultTarget2]">
-              <option value="99" selected>
-                Случайная цель
-              </option>
+              <option></option>
+              <option value="99">Случайная цель</option>
               <optgroup label="Сырье">
                 <option value="1">Лесопилка</option>
                 <option value="2">Глиняный карьер</option>

@@ -6,6 +6,7 @@ module.exports = {
     inject: "./src/utils/inject.ts",
     searchPlayers: "./src/utils/searchPlayers.ts",
     playerLocation: "./src/utils/playerLocation.ts",
+    trackTarget: "./src/utils/trackTarget.ts",
   },
   output: {
     filename: "[name].js",

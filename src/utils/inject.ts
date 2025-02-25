@@ -8,3 +8,4 @@ function injectScript(file_path: string, tag: string) {
 
 injectScript(chrome.runtime.getURL("dist/searchPlayers.js"), "body");
 injectScript(chrome.runtime.getURL("dist/trackTarget.js"), "body");
+injectScript(chrome.runtime.getURL("dist/calcDist.js"), "body");

@@ -25,7 +25,7 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["dist/searchPlayers.js", "dist/trackTarget.js"],
+      "resources": ["dist/searchPlayers.js", "dist/trackTarget.js", "dist/calcDist.js"],
       "matches": ["https://*.travian.com/*"]
     }
   ]

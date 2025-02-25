@@ -7,6 +7,7 @@ module.exports = {
     searchPlayers: "./src/utils/searchPlayers.ts",
     playerLocation: "./src/utils/playerLocation.ts",
     trackTarget: "./src/utils/trackTarget.ts",
+    calcDist: "./src/utils/calcDist.ts",
   },
   output: {
     filename: "[name].js",

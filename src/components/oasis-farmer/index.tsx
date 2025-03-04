@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { getDistance } from "../../utils";
 import { TroopForm } from "../troop-form";
 import { TilePosition, Tile } from "../../types";
@@ -27,6 +27,25 @@ export const OasisFarmer: FC = () => {
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isSending, setIsSending] = useState(false);
   const [sendCount, setSendCount] = useState(0);
+
+  const tileIds = useMemo(() => {
+    return tiles.map((t) => `${t.position.x}|${t.position.y}`);
+  }, [tiles]);
+
+  useEffect(() => {
+    const onKeydownHandler = (e: any) => {
+      if (e.key !== "q") {
+        return;
+      }
+      const lastCheckedPos = checkedFarm.length;
+      if (tileIds.length >= lastCheckedPos + 1) {
+        const added = tileIds[lastCheckedPos];
+        setCheckedFarm([...checkedFarm, added]);
+      }
+    };
+    addEventListener("keydown", onKeydownHandler);
+    return () => removeEventListener("keydown", onKeydownHandler);
+  }, [checkedFarm, tileIds]);
 
   const sendFarm = async () => {
     for (let i = 0; i < checkedFarm.length; i++) {

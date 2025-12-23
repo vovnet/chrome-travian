@@ -13,6 +13,7 @@ import { CloseIcon } from "../../icons/close-icon";
 import { Layout } from "../../ui/layout";
 import { useCurrentVillage } from "../../hooks/use-current-village";
 import { FarmsTable } from "./farms-table";
+import { FarmControls } from "./farm-controls";
 
 type Farm = { x: string; y: string };
 
@@ -109,45 +110,14 @@ export const Farmlist: FC = () => {
       title={<Typography size="large">{chrome.i18n.getMessage("listOfFarmsTitle")}</Typography>}
     >
       <Flex flexDirection="column" gap={12}>
-        <InputContainer>
-          <label>x|y:</label>
-          <TextInput ref={inputRef} type="text" className="text" />
-
-          <Button
-            onClick={() => {
-              if (inputRef.current) {
-                const value = inputRef.current.value.trim();
-                const isAdded = add(value);
-                if (isAdded) {
-                  inputRef.current.value = "";
-                }
-              }
-            }}
-          >
-            {chrome.i18n.getMessage("add")}
-          </Button>
-
-          <Button
-            disabled={!farms.size || isLoading}
-            onClick={() => {
-              const sorted = mappedFarms
-                .sort((a, b) => a.distance - b.distance)
-                .map((v) => `${v.x}|${v.y}`);
-              setFarms(new Set(sorted));
-            }}
-          >
-            Sort
-          </Button>
-
-          <Button
-            disabled={isLoading}
-            onClick={() => {
-              setLastPosition(0);
-            }}
-          >
-            {chrome.i18n.getMessage("reset")}
-          </Button>
-        </InputContainer>
+        <FarmControls
+          addFarm={add}
+          farmsCount={farms.size}
+          isLoading={isLoading}
+          mappedFarms={mappedFarms}
+          setFarms={setFarms}
+          resetPosition={() => setLastPosition(0)}
+        />
 
         {!!farms.size && (
           <Flex flexDirection="column" gap={8}>
@@ -218,16 +188,6 @@ function createSendFormData(
 }
 
 /////////// Styles
-
-const InputContainer = styled.div`
-  display: flex;
-  gap: 8px;
-  align-items: center;
-`;
-
-const TextInput = styled.input`
-  width: 60px;
-`;
 
 const TableContainer = styled.div`
   max-height: 600px;

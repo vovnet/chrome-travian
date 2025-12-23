@@ -12,6 +12,7 @@ import styled from "@emotion/styled";
 import { CloseIcon } from "../../icons/close-icon";
 import { Layout } from "../../ui/layout";
 import { useCurrentVillage } from "../../hooks/use-current-village";
+import { FarmsTable } from "./farms-table";
 
 type Farm = { x: string; y: string };
 
@@ -23,7 +24,7 @@ export const Farmlist: FC = () => {
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sendingCount, setSendingCount] = useState(0);
-  const [stopList, setStopList] = useState(new Set());
+  const [stopList, setStopList] = useState(new Set<string>());
   const currentVillage = useCurrentVillage();
 
   const mappedFarms = useMemo(() => {
@@ -46,94 +47,60 @@ export const Farmlist: FC = () => {
     const farmsArray = Array.from(farms);
     const missedAttacks = new Set<string>();
 
-    const index = lastPosition < farmsArray.length ? lastPosition : 0;
-    for (let i = index; i < farmsArray.length; i++) {
+    const startIndex = lastPosition < farmsArray.length ? lastPosition : 0;
+
+    for (let i = startIndex; i < farmsArray.length; i++) {
       const v = farmsArray[i];
       count++;
-      console.log("send troop to: ", v);
+      console.log("send troop to:", v);
+
       const [x, y] = v.split("|");
-
       const html = await apiTileDetails({ x: parseFloat(x), y: parseFloat(y) });
-      const find = html.match(/targetMapId=\d*/);
-      if (find) {
-        if (isFailedLastAttack(html)) {
-          console.log("Last attack was failed! ", v);
-          missedAttacks.add(v);
-          setStopList(missedAttacks);
-          continue;
-        }
-        const lastLoot = lastLootedResources(html);
-        if (lastLoot) {
-          console.log({ v, lastLoot });
-        }
 
-        if (troopFormRef.current) {
-          try {
-            const formData = new FormData(troopFormRef.current);
-            formData.append("eventType", "4");
-            formData.append("x", x);
-            formData.append("y", y);
-            formData.append("ok", "ok");
-            const response = await fetch("/build.php?gid=16&tt=2", {
-              method: "POST",
-              body: formData,
-            });
-            const htmlText = await response.text();
-            const [action] = htmlText.match(/troopsSend\/\d*\/\d*/);
-
-            const [, checksum] = htmlText
-              .match(/\[name=checksum]'\).value = '\w*/)?.[0]
-              .split(`= '`);
-            const [, villageId] = htmlText
-              .match(/troops\[\d]\[villageId]" value="\d*/)?.[0]
-              .split('="');
-
-            const t1 = formData.get("troop[t1]") as string;
-            const t2 = formData.get("troop[t2]") as string;
-            const t3 = formData.get("troop[t3]") as string;
-            const t4 = formData.get("troop[t4]") as string;
-            const t5 = formData.get("troop[t5]") as string;
-            const t6 = formData.get("troop[t6]") as string;
-
-            const sendFormData = new FormData();
-            sendFormData.append("checksum", checksum);
-            sendFormData.append("action", action);
-            sendFormData.append("eventType", "4");
-            sendFormData.append("x", x);
-            sendFormData.append("y", y);
-            sendFormData.append("troops[0][villageId]", villageId);
-            sendFormData.append("troops[0][t1]", t1);
-            sendFormData.append("troops[0][t2]", t2);
-            sendFormData.append("troops[0][t3]", t3);
-            sendFormData.append("troops[0][t4]", t4);
-            sendFormData.append("troops[0][t5]", t5);
-            sendFormData.append("troops[0][t6]", t6);
-
-            await fetch("/build.php?gid=16&tt=2", {
-              method: "POST",
-              body: sendFormData,
-            });
-
-            setLastPosition(i);
-            setSendingCount(count);
-          } catch (e) {
-            console.log("send farm error!");
-            setLastPosition(i);
-            setIsLoading(false);
-            break;
-          }
-        }
-      } else {
-        console.log("Wrong villiage position: ", v);
+      if (!html.match(/targetMapId=\d*/)) {
+        console.log("Wrong village position:", v);
         missedAttacks.add(v);
-        setStopList(missedAttacks);
+        setStopList(new Set(missedAttacks));
+        continue;
       }
 
-      if (i === farmsArray.length - 1) {
-        setLastPosition(0);
+      if (isFailedLastAttack(html)) {
+        console.log("Last attack failed:", v);
+        missedAttacks.add(v);
+        setStopList(new Set(missedAttacks));
+        continue;
       }
+
+      const lastLoot = lastLootedResources(html);
+      if (lastLoot) console.log({ v, lastLoot });
+
+      if (troopFormRef.current) {
+        try {
+          const formData = new FormData(troopFormRef.current);
+          formData.append("eventType", "4");
+          formData.append("x", x);
+          formData.append("y", y);
+          formData.append("ok", "ok");
+
+          const htmlText = await sendTroops(formData);
+          const parsed = parseTroopResponse(htmlText);
+          const sendFormData = createSendFormData(x, y, formData, parsed);
+
+          await fetch("/build.php?gid=16&tt=2", { method: "POST", body: sendFormData });
+
+          setLastPosition(i);
+          setSendingCount(count);
+        } catch (err) {
+          console.log("send farm error!", err);
+          setLastPosition(i);
+          break;
+        }
+      }
+
+      if (i === farmsArray.length - 1) setLastPosition(0);
     }
 
+    setStopList(missedAttacks);
     setIsLoading(false);
   };
 
@@ -199,53 +166,56 @@ export const Farmlist: FC = () => {
         )}
 
         <TableContainer>
-          <Table<{ id: string; x: string; y: string; index: number; distance: number }>
-            columns={[
-              {
-                label: "🔪",
-                renderCell: ({ index }) => (
-                  <Flex justifyContent="center">{index === lastPosition && <CurrentPoint />}</Flex>
-                ),
-              },
-              { label: "#", renderCell: ({ index }) => <>{index + 1}</> },
-              {
-                label: "Dist",
-                renderCell: ({ distance }) => <>{distance}</>,
-              },
-              {
-                label: "Pos",
-                renderCell: ({ id, x, y, index }) => (
-                  <FarmLink
-                    href={`/karte.php?x=${x}&y=${y}`}
-                    isDanger={stopList.has(id)}
-                  >{`(${x}|${y})`}</FarmLink>
-                ),
-              },
-              {
-                label: "Del",
-                renderCell: ({ id }) => (
-                  <StyledIconButton
-                    disabled={isLoading}
-                    onClick={() => {
-                      const removedIndex = Array.from(farms).findIndex((i) => i === id);
-                      const isRemoved = remove(id);
-                      if (isRemoved && lastPosition > removedIndex) {
-                        setLastPosition(lastPosition - 1);
-                      }
-                    }}
-                  >
-                    <CloseIcon />
-                  </StyledIconButton>
-                ),
-              },
-            ]}
-            data={mappedFarms}
+          <FarmsTable
+            farms={mappedFarms}
+            lastPosition={lastPosition}
+            stopList={stopList}
+            isLoading={isLoading}
+            removeFarm={remove}
+            setLastPosition={setLastPosition}
           />
         </TableContainer>
       </Flex>
     </Layout>
   );
 };
+
+// Отправка формы на сервер и получение ответа
+async function sendTroops(formData: FormData): Promise<string> {
+  const response = await fetch("/build.php?gid=16&tt=2", { method: "POST", body: formData });
+  return response.text();
+}
+
+// Извлечение данных из html-ответа
+function parseTroopResponse(htmlText: string) {
+  const [action] = htmlText.match(/troopsSend\/\d*\/\d*/) ?? [];
+  const [, checksum] = htmlText.match(/\[name=checksum]'\).value = '\w*/)?.[0].split("= '") ?? [];
+  const [, villageId] =
+    htmlText.match(/troops\[\d]\[villageId]" value="\d*/)?.[0].split('="') ?? [];
+  return { action, checksum, villageId };
+}
+
+// Создание FormData для повторной отправки
+function createSendFormData(
+  x: string,
+  y: string,
+  formData: FormData,
+  parsed: { action: string; checksum: string; villageId: string }
+) {
+  const sendFormData = new FormData();
+  sendFormData.append("checksum", parsed.checksum);
+  sendFormData.append("action", parsed.action);
+  sendFormData.append("eventType", "4");
+  sendFormData.append("x", x);
+  sendFormData.append("y", y);
+  sendFormData.append("troops[0][villageId]", parsed.villageId);
+
+  for (let i = 1; i <= 6; i++) {
+    const t = formData.get(`troop[t${i}]`) as string;
+    sendFormData.append(`troops[0][t${i}]`, t);
+  }
+  return sendFormData;
+}
 
 /////////// Styles
 
@@ -259,46 +229,11 @@ const TextInput = styled.input`
   width: 60px;
 `;
 
-const List = styled(Flex)`
-  flex-wrap: wrap;
-  max-width: 340px;
-  max-height: 600px;
-  overflow: auto;
-`;
-
-const FarmLink = styled.a<{ isDanger?: boolean }>`
-  min-width: 60px;
-  background-color: ${(props) => (props.isDanger ? "#290201" : "inherit")};
-`;
-
 const TableContainer = styled.div`
   max-height: 600px;
   overflow: auto;
 `;
 
-const CurrentPoint = styled.div`
-  width: 12px;
-  height: 12px;
-  background-color: #ecb501;
-  border-radius: 50%;
-`;
-
 const StyledText = styled.div<{ color?: string }>`
   color: ${(props) => props.color};
-`;
-
-const StyledIconButton = styled.button`
-  padding: 0;
-
-  & svg {
-    width: 14px;
-    height: 14px;
-    color: ${(props) => (props.disabled ? "#e7250c55" : "#e75936")};
-  }
-
-  &:hover {
-    & svg {
-      color: ${(props) => (props.disabled ? "#e7250c55" : "#faa23e")};
-    }
-  }
 `;

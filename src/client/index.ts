@@ -40,3 +40,7 @@ export const apiWriteMessage = (form: FormData) => {
 export const apiStatistics = (page = 1) => {
   return fetch(`/statistics/player/overview?page=${page}`, { method: "GET" });
 };
+
+export const apiNewDid = (id: number) => {
+  return fetch(`/dorf1.php?newdid=${id}`, { method: "GET" });
+};

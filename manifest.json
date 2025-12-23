@@ -12,7 +12,8 @@
   "content_scripts": [
     {
       "matches": ["https://*.travian.com/karte.php*"],
-      "js": ["dist/main.js"]
+      "js": ["dist/main.js"],
+      "run_at": "document_idle"
     },
     {
       "matches": ["https://*.travian.com/*"],

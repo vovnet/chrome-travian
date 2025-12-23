@@ -1,39 +1,31 @@
 export const findVilliagesInfo = () => {
-  const currentVillageId = Number(
-    document.querySelector(".villageInput")?.getAttribute("data-did")
-  );
+  const villageElements = document.querySelectorAll<HTMLDivElement>('.listEntry.village');
 
   const villiages = new Map<number, { id: number; x: string; y: string }>();
+  let currentVillageId: number | null = null;
 
-  const multipleVilliages = document.querySelectorAll("[data-did][data-x][data-y]");
-  if (multipleVilliages.length) {
-    multipleVilliages.forEach((v) => {
-      const id = Number(v.getAttribute("data-did"));
-      const x = v.getAttribute("data-x");
-      const y = v.getAttribute("data-y");
-      if (id && x !== null && y !== null) {
-        villiages.set(id, { id, x, y });
-      }
-    });
-  } else {
-    const textX = document.querySelector(".coordinateX")?.textContent;
-    const textY = document.querySelector(".coordinateY")?.textContent;
-    const id = currentVillageId;
-    if (!textX || !textY) {
-      throw new Error("Not found coordinates!");
-    }
-    const x = getCoordinateFromString(textX);
-    const y = getCoordinateFromString(textY);
+  villageElements.forEach((el) => {
+    const id = Number(el.dataset.did);
+    const xText = el.querySelector('.coordinateX')?.textContent || '';
+    const yText = el.querySelector('.coordinateY')?.textContent || '';
+
+    const x = getCoordinateFromString(xText);
+    const y = getCoordinateFromString(yText);
+
     villiages.set(id, { id, x, y });
-  }
 
-  return { currentVillageId, villiages };
+    if (el.classList.contains('active')) {
+      currentVillageId = id;
+    }
+  });
+
+  return { currentVillageId,  villiages };
 };
 
 function getCoordinateFromString(coord: string) {
-  const num = coord.match(/\d+/g)?.[0];
-  if (num === undefined) {
-    throw new Error("Coordinates not found!");
-  }
-  return coord.length - num.length > 3 ? `-${num}` : num;
+  // Убираем невидимые символы и математический минус
+  let cleaned = coord.replace(/[\u200B-\u200F\u202A-\u202E]/g, '').replace(/\u2212/g, '-');
+  const match = cleaned.match(/-?\d+/);
+  if (!match) throw new Error('Coordinates not found!');
+  return match[0];
 }

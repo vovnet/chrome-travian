@@ -1,27 +1,20 @@
-import React, { FC, useEffect, useMemo, useRef, useState } from "react";
+import React, { FC, useMemo, useRef, useState } from "react";
 import { Flex } from "../../ui/flex";
 import { TroopForm } from "../troop-form";
-import { getDistance, sleep } from "../../utils";
+import { getDistance } from "../../utils";
 import { useFarmList } from "../../hooks/use-farm-list";
 import { Typography } from "../../ui/text";
 import { Button } from "../../ui/button";
 import { apiTileDetails } from "../../client";
 import { isFailedLastAttack, lastLootedResources } from "../../client/parser";
-import { Table } from "../../ui/table";
 import styled from "@emotion/styled";
-import { CloseIcon } from "../../icons/close-icon";
 import { Layout } from "../../ui/layout";
 import { useCurrentVillage } from "../../hooks/use-current-village";
 import { FarmsTable } from "./farms-table";
 import { FarmControls } from "./farm-controls";
 
-type Farm = { x: string; y: string };
-
-const LAST_POSITION = "bot-last-farm-position";
-
 export const Farmlist: FC = () => {
   const { farms, add, remove, set: setFarms, lastPosition, setLastPosition } = useFarmList();
-  const inputRef = useRef<HTMLInputElement>(null);
   const troopFormRef = useRef<HTMLFormElement>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [sendingCount, setSendingCount] = useState(0);
@@ -85,6 +78,9 @@ export const Farmlist: FC = () => {
 
           const htmlText = await sendTroops(formData);
           const parsed = parseTroopResponse(htmlText);
+          if (!parsed.checksum) {
+            throw new Error("Checksum not found in response");
+          }
           const sendFormData = createSendFormData(x, y, formData, parsed);
 
           await fetch("/build.php?gid=16&tt=2", { method: "POST", body: sendFormData });

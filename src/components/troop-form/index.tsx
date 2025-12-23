@@ -3,14 +3,22 @@ import { UNITS } from "../../utils/unit";
 import { TroopInput, TroopItem, TroopsContainer } from "./styles";
 import { useNation } from "../../hooks/use-nation";
 
-type TroopFormProps = {};
+type TroopFormProps = {
+  onChange?: (formData: TroopsData) => void;
+};
 
-export const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref) => {
+export const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>(({ onChange }, ref) => {
   const { nation } = useNation();
   const CURRENT_NATION = nation !== undefined ? nation : 0;
 
+  const handleChange = (e: React.FormEvent<HTMLFormElement>) => {
+    if (!onChange) return;
+
+    onChange(getTroopsData(e.currentTarget));
+  };
+
   return (
-    <form ref={ref} method="post">
+    <form ref={ref} method="post" onChange={handleChange}>
       <TroopsContainer>
         <TroopItem>
           <img
@@ -64,3 +72,25 @@ export const TroopForm = forwardRef<HTMLFormElement, TroopFormProps>((props, ref
     </form>
   );
 });
+
+export type TroopsData = {
+  t1: string;
+  t2: string;
+  t3: string;
+  t4: string;
+  t5: string;
+  t6: string;
+};
+
+function getTroopsData(form: HTMLFormElement): TroopsData {
+  const fd = new FormData(form);
+
+  return {
+    t1: (fd.get("troop[t1]") ?? "").toString(),
+    t2: (fd.get("troop[t2]") ?? "").toString(),
+    t3: (fd.get("troop[t3]") ?? "").toString(),
+    t4: (fd.get("troop[t4]") ?? "").toString(),
+    t5: (fd.get("troop[t5]") ?? "").toString(),
+    t6: (fd.get("troop[t6]") ?? "").toString(),
+  };
+}

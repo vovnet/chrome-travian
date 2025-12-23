@@ -1,10 +1,6 @@
 import { useEffect, useState } from "react";
 import { currentVillageId, STORAGE_NAME } from "..";
-
-type Farm = {
-  lastPosition: number;
-  list: string[];
-};
+import { Farm } from "../types";
 
 export const useFarmList = () => {
   const NAME = STORAGE_NAME + currentVillageId;

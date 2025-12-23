@@ -8,3 +8,8 @@ export type Tile = {
   did?: number;
   uid?: number;
 };
+
+export type Farm = {
+  lastPosition: number;
+  list: string[];
+};

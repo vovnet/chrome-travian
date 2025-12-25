@@ -1,4 +1,4 @@
-import { currentVillageId, userVilliages } from "..";
+import { userVilliages } from "..";
 import { apiGetHero, apiMapPosition, apiNewDid } from "../client";
 import { ANIMALS, AnimalTypeId } from "../client/types/animal";
 import { getDistance } from "../utils";
@@ -13,62 +13,117 @@ export class HeroFarmService {
     this.strength = strength;
   }
 
-  async run() {
+  async run(): Promise<void> {
+    // const farm = await this.findBestFarm({ x: -2, y: -130 });
+
+    const heroInfo = await this.getReadyHero();
+    if (!heroInfo) return;
+
+    const village = await this.getHeroVillage(heroInfo);
+    if (!village) return;
+
+    const bestFarm = await this.findBestFarm(village);
+    if (!bestFarm) return;
+
+    await this.sendHeroToFarm(bestFarm);
+  }
+
+  private async getReadyHero() {
     const heroInfo = await apiGetHero();
 
-    if (heroInfo.commonData.currentHealth < this.minHealth) {
-      console.log("hero healt is to low: ", heroInfo.commonData.currentHealth);
-      return;
+    const currentHealth = heroInfo.commonData.currentHealth;
+    if (currentHealth < this.minHealth) {
+      console.log("[HeroFarm] Hero health too low:", currentHealth);
+      return null;
     }
 
-    if (heroInfo.heroState.status.inVillage?.id) {
-      await apiNewDid(heroInfo.heroState.status.inVillage?.id);
-    } else {
-      console.log("Hero is not at home.");
-      return;
+    const homeVillageId = heroInfo.heroState.status.inVillage?.id;
+    if (!homeVillageId) {
+      console.log("[HeroFarm] Hero is not in village");
+      return null;
     }
 
-    const farm = await getFarm(this.strength);
+    await apiNewDid(homeVillageId);
 
-    if (!farm.length) {
-      console.log("Empty farm list");
-      return;
+    return heroInfo;
+  }
+
+  private async getHeroVillage(heroInfo: Awaited<ReturnType<typeof apiGetHero>>) {
+    const villageId = heroInfo.heroState.status.inVillage?.id || 0;
+    const village = userVilliages.get(villageId);
+
+    if (!village) {
+      console.log("[HeroFarm] Village not found:", villageId);
+      return null;
     }
 
-    const { x, y } = farm[0].position;
+    return village;
+  }
 
-    const formData = new FormData();
-    formData.append("troop[t1]", "");
-    formData.append("troop[t4]", "");
-    formData.append("troop[t5]", "");
-    formData.append("troop[t3]", "");
-    formData.append("troop[t11]", "1");
-    formData.append("villagename", "");
-    formData.append("eventType", "4");
-    formData.append("x", x.toString());
-    formData.append("y", y.toString());
-    formData.append("ok", "ok");
+  private async findBestFarm(village: { x: number | string; y: number | string }) {
+    const farms = await getFarm({
+      attackPower: this.strength,
+      pos: {
+        x: Number(village.x),
+        y: Number(village.y),
+      },
+    });
 
-    const sendResponse = await sendTroops(formData);
-
-    const newData = collectTroopSendFormDataFromHTML(sendResponse, "troopSendForm");
-
-    for (const [key, value] of newData.entries()) {
-      console.log(key, value);
+    if (farms.length === 0) {
+      console.log("[HeroFarm] No suitable oases found");
+      return null;
     }
+    console.log(
+      farms.map((f) => ({
+        distance: f.distance,
+        priority: f.priority,
+        totalResources: f.sum.totalResources,
+        kpi: `${Math.round(calculateOasisKPI(f.sum.totalResources, f.distance, 19))} res/h`,
+      }))
+    );
+    return farms[0];
+  }
 
-    await fetch("/build.php?gid=16&tt=2", { method: "POST", body: newData });
+  private async sendHeroToFarm(farm: { position: { x: number; y: number }; priority: number }) {
+    const { x, y } = farm.position;
 
-    console.log(`Send hero to: ${x}|${y}`);
+    const initialForm = prepareForm(x, y);
+    const responseHtml = await sendTroops(initialForm);
+
+    const finalFormData = collectTroopSendFormDataFromHTML(responseHtml, "troopSendForm");
+
+    await fetch("/build.php?gid=16&tt=2", {
+      method: "POST",
+      body: finalFormData,
+    });
+
+    console.log(`[HeroFarm] Hero sent to ${x}|${y}, priority=${farm.priority.toFixed(2)}`);
   }
 }
 
-async function getFarm(attackPower = 100) {
-  const currentVilliage = userVilliages.get(currentVillageId);
-  const tiles = await apiMapPosition({
-    x: Number(currentVilliage?.x),
-    y: Number(currentVilliage?.y),
-  });
+function prepareForm(x: number, y: number) {
+  const formData = new FormData();
+  formData.append("troop[t1]", "");
+  formData.append("troop[t4]", "");
+  formData.append("troop[t5]", "");
+  formData.append("troop[t3]", "");
+  formData.append("troop[t11]", "1");
+  formData.append("villagename", "");
+  formData.append("eventType", "4");
+  formData.append("x", x.toString());
+  formData.append("y", y.toString());
+  formData.append("ok", "ok");
+  return formData;
+}
+
+async function getFarm({
+  attackPower,
+  pos,
+}: {
+  attackPower: number;
+  pos: { x: number; y: number };
+}) {
+  const tiles = await apiMapPosition(pos);
 
   return tiles
     .filter((t) => t.title === "{k.fo}")
@@ -88,12 +143,7 @@ async function getFarm(attackPower = 100) {
         { totalResources: 0, totalInfantryDefense: 0, totalCavalryDefense: 0 }
       );
 
-      const distance = getDistance(
-        d.position.x,
-        Number(currentVilliage?.x),
-        d.position.y,
-        Number(currentVilliage?.y)
-      );
+      const distance = getDistance(d.position.x, pos.x, d.position.y, pos.y);
 
       const priority = calculateOasisPriority({
         attackPower,
@@ -150,6 +200,17 @@ interface OasisAssessmentInput {
   speedFieldsPerHour: number; // Скорость героя в полях/час
 }
 
+// speedFieldsPerHour — скорость героя
+function calculateOasisKPI(
+  totalResources: number,
+  distanceInFields: number,
+  speedFieldsPerHour: number
+) {
+  const roundTripHours = (distanceInFields * 2) / speedFieldsPerHour; // туда + обратно
+  if (roundTripHours === 0) return 0;
+  return totalResources / roundTripHours;
+}
+
 function calculateOasisPriority({
   attackPower,
   totalCavalryDefense,
@@ -157,18 +218,23 @@ function calculateOasisPriority({
   distanceInFields,
   speedFieldsPerHour,
 }: OasisAssessmentInput): number {
-  if (totalCavalryDefense === 0 && totalResources === 0) return 0;
-  if (totalCavalryDefense > 0 && attackPower < 5 * totalCavalryDefense) return 0;
+  if (totalResources <= 0) return 0;
 
-  const resourceScore = Math.pow(totalResources, 1.3); // больше веса на ресурсы
-  const timeHours = distanceInFields / speedFieldsPerHour;
-  const distanceScore = 1 / (1 + timeHours / 2); // мягкий эффект дистанции
+  // герой не должен получать урон
+  if (totalCavalryDefense > 0 && attackPower < 5 * totalCavalryDefense) {
+    return 0;
+  }
+
+  const roundTripHours = (distanceInFields / speedFieldsPerHour) * 2;
+
+  // основной KPI
+  const resourcesPerHour = totalResources / Math.max(roundTripHours, 0.1);
+
+  // запас по силе (мягкий бонус, а не доминирующий)
   const safetyFactor =
-    totalCavalryDefense > 0
-      ? Math.sqrt(attackPower / totalCavalryDefense) // меньше доминирования защиты
-      : 1;
+    totalCavalryDefense > 0 ? Math.min(2, Math.sqrt(attackPower / totalCavalryDefense)) : 1.5;
 
-  return resourceScore * distanceScore * safetyFactor;
+  return Math.round(resourcesPerHour * safetyFactor);
 }
 
 async function sendTroops(formData: FormData): Promise<string> {

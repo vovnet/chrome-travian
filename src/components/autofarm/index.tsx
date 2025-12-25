@@ -9,6 +9,10 @@ import { STORAGE_NAME, userVilliages } from "../..";
 import { FarmService } from "../../services/farmService";
 import { TroopForm } from "../troop-form";
 import styled from "@emotion/styled";
+import { HeroCard } from "./components/hero-card";
+import { HeroFarmService } from "../../services/heroFarmService";
+
+const HERO_FARM_ID = 999999;
 
 export const Autofarm: FC = () => {
   const [activeIds, setActiveIds] = useState<string[]>([]);
@@ -16,6 +20,10 @@ export const Autofarm: FC = () => {
   const [lastRunMap, setLastRunMap] = useState<Map<string, number>>(new Map());
 
   const [intervalsByVillage, setIntervalsByVillage] = useState<Record<string, number>>({});
+
+  // hero
+  const [minHealth, setMinHealts] = useState(20);
+  const [heroStrength, setHeroStrength] = useState(999);
 
   // при изменении input:
   const handleIntervalChange = (villageId: string, value: string) => {
@@ -78,9 +86,48 @@ export const Autofarm: FC = () => {
     }
   };
 
+  const toggleHero = (id: string) => {
+    const intervalMinutes = intervalsByVillage[id] ?? 5;
+
+    if (activeIds.includes(id)) {
+      scheduler.unregister(id);
+      setActiveIds((prev) => prev.filter((x) => x !== id));
+    } else {
+      const service = new HeroFarmService(minHealth, heroStrength);
+      // создаём воркер на момент старта
+      const worker: WorkerTask = {
+        id,
+        interval: intervalMinutes * 60 * 1000,
+        run: async () => {
+          console.log("run hero");
+          await service.run();
+        },
+      };
+      scheduler.register(worker);
+      setActiveIds((prev) => [...prev, id]);
+    }
+  };
+
   return (
     <Layout title={<Typography size="large">Autofarm</Typography>}>
       <WorkersContainer>
+        <WorkerCard>
+          <HeroCard
+            heroStrength={heroStrength}
+            minHealth={minHealth}
+            isStarted={activeIds.includes(HERO_FARM_ID.toString())}
+            onStart={() => toggleHero(HERO_FARM_ID.toString())}
+            onChangeHealth={setMinHealts}
+            onChangeHeroStrength={setHeroStrength}
+            interval={intervalsByVillage[HERO_FARM_ID.toString()] ?? 5}
+            onChageInterval={(val) => handleIntervalChange(HERO_FARM_ID.toString(), val.toString())}
+            formattedLastRun={
+              lastRunMap.get(HERO_FARM_ID.toString())
+                ? formatTime(lastRunMap.get(HERO_FARM_ID.toString()))
+                : "-"
+            }
+          />
+        </WorkerCard>
         {Array.from(userVilliages.keys()).map((villageId) => {
           const active = activeIds.includes(villageId.toString());
           const troops = troopsByVillage[villageId];

@@ -1,4 +1,5 @@
 import { Tile, TilePosition } from "../types";
+import { HeroResponse } from "./types/hero";
 
 export const apiMapPosition = async ({ x, y }: TilePosition) => {
   const data = await fetch("/api/v1/map/position", {
@@ -43,4 +44,9 @@ export const apiStatistics = (page = 1) => {
 
 export const apiNewDid = (id: number) => {
   return fetch(`/dorf1.php?newdid=${id}`, { method: "GET" });
+};
+
+export const apiGetHero = async (): Promise<HeroResponse> => {
+  const data = await fetch("/api/v1/hero/v2/screen/inventory", { method: "GET" });
+  return await data.json();
 };

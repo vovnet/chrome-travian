@@ -111,7 +111,7 @@ export const Autofarm: FC = () => {
   return (
     <Layout title={<Typography size="large">Autofarm</Typography>}>
       <WorkersContainer>
-        <WorkerCard>
+        <WorkerCard active={activeIds.includes(HERO_FARM_ID.toString())}>
           <HeroCard
             heroStrength={heroStrength}
             minHealth={minHealth}

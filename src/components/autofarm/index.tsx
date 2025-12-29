@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useRef, useState } from "react";
 import { Layout } from "../../ui/layout";
 import { Typography } from "../../ui/text";
 import { scheduler, WorkerTask } from "../../services/backgroundScheduler";
@@ -20,6 +20,10 @@ export const Autofarm: FC = () => {
   const [lastRunMap, setLastRunMap] = useState<Map<string, number>>(new Map());
 
   const [intervalsByVillage, setIntervalsByVillage] = useState<Record<string, number>>({});
+  const [maxOasisDistanceByVillage, setMaxOasisDistanceByVillage] = useState<
+    Record<string, number>
+  >({});
+  const farmServicesRef = useRef<Map<string, FarmService>>(new Map());
 
   // hero
   const [minHealth, setMinHealts] = useState(20);
@@ -33,6 +37,13 @@ export const Autofarm: FC = () => {
         ...prev,
         [villageId]: num,
       }));
+    }
+  };
+
+  const handleMaxOasisDistanceChange = (villageId: string, value: string) => {
+    const num = parseInt(value, 10);
+    if (!isNaN(num)) {
+      setMaxOasisDistanceByVillage((prev) => ({ ...prev, [villageId]: num }));
     }
   };
 
@@ -55,6 +66,18 @@ export const Autofarm: FC = () => {
   // функция создания воркера для конкретной деревни
   const createWorker = (villageId: number): WorkerTask => {
     const intervalMinutes = intervalsByVillage[villageId.toString()] ?? 5;
+    const maxOasisDistance = maxOasisDistanceByVillage[villageId.toString()] ?? 0;
+
+    const id = villageId.toString();
+    // создаём сервис один раз
+    if (!farmServicesRef.current.has(id)) {
+      farmServicesRef.current.set(
+        id,
+        new FarmService(villageId.toString(), troopsByVillage[id], maxOasisDistance)
+      );
+    }
+
+    const service = farmServicesRef.current.get(id)!;
 
     return {
       id: villageId.toString(),
@@ -64,10 +87,8 @@ export const Autofarm: FC = () => {
         await apiNewDid(villageId);
       },
       run: async () => {
-        const service = new FarmService(STORAGE_NAME + villageId, troopsByVillage[villageId]);
-        const farms = service.getFarms();
-        console.log({ farms });
-        console.log("Troops data for run:", troopsByVillage[villageId]);
+        // обновляем troops перед запуском
+        service.updateTroops(troopsByVillage[id], maxOasisDistance);
         await service.farm();
       },
     };
@@ -147,6 +168,17 @@ export const Autofarm: FC = () => {
                   onChange={(e) => handleIntervalChange(villageId.toString(), e.target.value)}
                 />
                 <span>мин</span>
+              </Flex>
+              <Flex gap={8} alignItems="center">
+                <span>Макс. дистанция оазисов: </span>
+                <Input
+                  type="number"
+                  min={0}
+                  value={maxOasisDistanceByVillage[villageId.toString()] ?? 0}
+                  onChange={(e) =>
+                    handleMaxOasisDistanceChange(villageId.toString(), e.target.value)
+                  }
+                />
               </Flex>
               Последний запуск:{" "}
               {lastRunMap.get(villageId.toString())

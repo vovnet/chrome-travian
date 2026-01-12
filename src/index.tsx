@@ -1,5 +1,5 @@
 import { createPortal } from "./tools";
-import { FC, useEffect, useLayoutEffect, useState } from "react";
+import { FC, useLayoutEffect, useState } from "react";
 import { createRoot } from "react-dom/client";
 import React from "react";
 import { OasisFarmer } from "./components/oasis-farmer";
@@ -17,6 +17,7 @@ import { findVilliagesInfo } from "./utils/findVilliagesInfo";
 import { Waves } from "./components/waves";
 import { WriteMessage } from "./components/write-message";
 import { Autofarm } from "./components/autofarm";
+import { Reports } from "./components/reports";
 
 export const { currentVillageId, villiages: userVilliages } = findVilliagesInfo();
 
@@ -29,7 +30,16 @@ export const CURRENT_NATION = 0;
 export const STORAGE_NAME = "bot-farm-list";
 export const LAST_TAB = "bot-last-opened-tab";
 
-type Page = "oasis" | "farm" | "searchFarm" | "15" | "settings" | "waves" | "auto" | "spam";
+type Page =
+  | "oasis"
+  | "farm"
+  | "searchFarm"
+  | "15"
+  | "settings"
+  | "waves"
+  | "auto"
+  | "spam"
+  | "reports";
 
 const App: FC = () => {
   const [page, setPage] = useState<Page>("settings");
@@ -56,6 +66,7 @@ const App: FC = () => {
             { id: "waves", title: chrome.i18n.getMessage("waves") },
             { id: "15", title: chrome.i18n.getMessage("crop") },
             { id: "auto", title: "Autofarm" },
+            { id: "reports", title: "Reports" },
             { id: "spam", title: "Spam" },
             {
               id: "settings",
@@ -76,6 +87,7 @@ const App: FC = () => {
         {page === "15" && <Find15 />}
         {page === "waves" && <Waves />}
         {page === "auto" && <Autofarm />}
+        {page === "reports" && <Reports />}
         {page === "spam" && <WriteMessage />}
       </AppContainer>
     </>

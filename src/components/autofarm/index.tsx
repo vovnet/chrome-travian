@@ -5,7 +5,7 @@ import { scheduler, WorkerTask } from "../../services/backgroundScheduler";
 import { Flex } from "../../ui/flex";
 import { Button } from "../../ui/button";
 import { apiNewDid } from "../../client";
-import { STORAGE_NAME, userVilliages } from "../..";
+import { userVilliages } from "../..";
 import { FarmService } from "../../services/farmService";
 import { TroopForm } from "../troop-form";
 import styled from "@emotion/styled";

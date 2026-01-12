@@ -50,3 +50,13 @@ export const apiGetHero = async (): Promise<HeroResponse> => {
   const data = await fetch("/api/v1/hero/v2/screen/inventory", { method: "GET" });
   return await data.json();
 };
+
+export const apiGetReports = async (page = "") => {
+  const data = await fetch(`/report/overview?page=${page}`, { method: "GET" });
+  return await data.text();
+};
+
+export const apiGetReportById = async (id: string) => {
+  const data = await fetch(`/report?id=${id}`, { method: "GET" });
+  return await data.text();
+};
